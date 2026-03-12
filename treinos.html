@@ -192,7 +192,7 @@
                         <p class="text-brand-accent text-sm font-semibold uppercase tracking-wider mb-4">Exercício</p>
                     </div>
                     <div class="aspect-video w-full bg-neutral-900 relative flex items-center justify-center overflow-hidden">
-                        <img alt="${ex.exercicio}" class="w-full h-full object-cover" src="${ex.gif || 'https://via.placeholder.com/400x225?text=Sem+GIF'}" onerror="this.src='https://via.placeholder.com/400x225?text=Sem+GIF'"/>
+                        ${renderMedia(ex.gif, ex.exercicio)}
                     </div>
                     <!-- Instruções / Repetições -->
                     <div class="px-5 py-3 bg-white/5 border-b border-white/5">
@@ -216,6 +216,24 @@
             });
 
             updateProgress();
+        }
+
+        function renderMedia(url, alt) {
+            if (!url) return `<img alt="${alt}" class="w-full h-full object-cover" src="https://via.placeholder.com/400x225?text=Sem+Mídia"/>`;
+            
+            const isVideo = url.toLowerCase().endsWith('.mp4') || 
+                            url.toLowerCase().endsWith('.webm') || 
+                            url.toLowerCase().endsWith('.mov');
+
+            if (isVideo) {
+                return `
+                    <video class="w-full h-full object-cover" autoplay loop muted playsinline>
+                        <source src="${url}" type="video/mp4">
+                        Seu navegador não suporta vídeos.
+                    </video>`;
+            } else {
+                return `<img alt="${alt}" class="w-full h-full object-cover" src="${url}" onerror="this.src='https://via.placeholder.com/400x225?text=Sem+Mídia'"/>`;
+            }
         }
 
         function updateLocalStatus(exercicio, isChecked, tab, index) {

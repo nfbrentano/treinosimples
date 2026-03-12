@@ -288,9 +288,9 @@
         }
 
         function updateProgress() {
-            const allExercises = [...workoutData.treinoA, ...workoutData.treinoB];
-            const total = allExercises.length;
-            const completed = allExercises.filter(ex => ex.concluido).length;
+            const data = currentTab === 'A' ? workoutData.treinoA : workoutData.treinoB;
+            const total = data.length;
+            const completed = data.filter(ex => ex.concluido).length;
             const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
             
             document.getElementById('progress-text').innerText = `${percentage}%`;

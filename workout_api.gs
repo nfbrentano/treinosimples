@@ -174,7 +174,7 @@ function doPost(e) {
       }
     });
 
-    return jsonResponse({ success: true, message: "Status atualizado com sucesso." });
+    return jsonResponse({ success: true, message: "Treino enviado ao Personal Trainer" });
 
   } catch (err) {
     return jsonResponse({ error: err.toString() }, 500);

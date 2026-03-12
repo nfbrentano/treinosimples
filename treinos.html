@@ -256,7 +256,7 @@
                 if (response.ok) {
                     // Limpa LocalStorage após salvar no Sheets
                     localStorage.removeItem(`pending_${userCpf}`);
-                    alert('Treino salvo com sucesso na planilha!');
+                    alert('Treino enviado ao Personal Trainer');
                 } else {
                     const error = await response.json();
                     alert('Erro ao salvar: ' + (error.error || 'Erro desconhecido'));

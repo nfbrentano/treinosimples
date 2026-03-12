@@ -50,15 +50,30 @@ Use esta URL para buscar os treinos do dia:
 }
 ```
 
-### 2. Marcar como Concluído (POST)
-Envie um JSON no corpo da requisição:
+### 2. Salvar Treino (Batch POST)
+Envie um JSON contendo uma lista de exercícios:
+
 ```json
 {
   "cpf": "12345678900",
-  "exercicio": "Agachamento",
-  "concluido": true
+  "exercicios": [
+    { "nome": "Agachamento", "concluido": true },
+    { "nome": "Supino", "concluido": false }
+  ]
 }
 ```
+
+---
+
+## 📱 Fluxo do Aplicativo
+
+### 1. Login (`index.html`)
+O aluno insere o CPF. O sistema valida na planilha e redireciona.
+
+### 2. Dashboard de Treinos (`treinos.html`)
+- **Abas A/B**: Alterna entre os treinos.
+- **LocalStorage**: Ao marcar "Concluído", o status é salvo localmente. Isso garante que você não perca o progresso se a internet oscilar durante o treino.
+- **Botão Salvar Treino**: Envia todos os status (A e B) para a Google Sheets de uma só vez.
 
 ---
 

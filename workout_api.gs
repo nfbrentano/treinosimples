@@ -103,12 +103,22 @@ function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
     const cpf = payload.cpf;
-    const exercicioNome = payload.exercicio;
-    const concluido = payload.concluido;
     const targetDate = payload.data || getTodayDate();
+    
+    // Lista de exercícios para atualizar
+    let exerciciosParaAtualizar = [];
+    
+    if (payload.exercicios && Array.isArray(payload.exercicios)) {
+      exerciciosParaAtualizar = payload.exercicios;
+    } else if (payload.exercicio) {
+      exerciciosParaAtualizar.push({
+        nome: payload.exercicio,
+        concluido: payload.concluido
+      });
+    }
 
-    if (!cpf || !exercicioNome) {
-      return jsonResponse({ error: "CPF e Exercício são obrigatórios no payload." }, 400);
+    if (!cpf || exerciciosParaAtualizar.length === 0) {
+      return jsonResponse({ error: "CPF e lista de exercícios são obrigatórios." }, 400);
     }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -140,27 +150,20 @@ function doPost(e) {
     }
 
     if (dateColIndex === -1) {
-       // Se a data não existe, podemos criar ou retornar erro. Aqui vamos criar para ser resiliente.
        dateColIndex = headerRow.length;
        sheet.getRange(1, dateColIndex + 1).setValue(targetDate);
     }
 
-    // 2. Achar a Linha do Exercício (Coluna A)
-    let exerciseRowIndex = -1;
-    for (let i = 1; i < data.length; i++) {
-      if (data[i][0] === exercicioNome) {
-        exerciseRowIndex = i;
-        break;
+    // 2. Processar cada exercício
+    const exerciseNamesInSheet = data.map(row => row[0]);
+    
+    exerciciosParaAtualizar.forEach(item => {
+      const exerciseRowIndex = exerciseNamesInSheet.indexOf(item.nome);
+      if (exerciseRowIndex !== -1) {
+        const valueToSet = item.concluido ? "Sim" : "";
+        sheet.getRange(exerciseRowIndex + 1, dateColIndex + 1).setValue(valueToSet);
       }
-    }
-
-    if (exerciseRowIndex === -1) {
-      return jsonResponse({ error: "Exercício não encontrado na planilha." }, 404);
-    }
-
-    // 3. Atualizar a Célula
-    const valueToSet = concluido ? "Sim" : "";
-    sheet.getRange(exerciseRowIndex + 1, dateColIndex + 1).setValue(valueToSet);
+    });
 
     return jsonResponse({ success: true, message: "Status atualizado com sucesso." });
 

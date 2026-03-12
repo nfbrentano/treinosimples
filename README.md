@@ -34,9 +34,11 @@ Certifique-se de que a aba do aluno tenha o nome do seu CPF (ex: `12345678900`) 
 
 ## 🔌 Uso da API
 
+URL do seu Web App: `https://script.google.com/macros/s/AKfycbwnj6G5k-AxCVeWng252LJJhGgVm551llXwT3JiiZil3l_KTo-1vczNdnec9xnWFeFADQ/exec`
+
 ### 1. Carregar Treinos (GET)
 Use esta URL para buscar os treinos do dia:
-`SUA_URL_AQUI/exec?cpf=12345678900`
+`https://script.google.com/macros/s/AKfycbwnj6G5k-AxCVeWng252LJJhGgVm551llXwT3JiiZil3l_KTo-1vczNdnec9xnWFeFADQ/exec?cpf=12345678900`
 
 **Resposta de Exemplo:**
 ```json

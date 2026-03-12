@@ -22,10 +22,10 @@ Concluí a implementação do seu backend! Agora, você pode conectar sua planil
 
 Certifique-se de que a aba do aluno tenha o nome do seu CPF (ex: `12345678900`) e siga este layout:
 
-| A (Exercício) | B (Link GIF) | C (Tipo) | D (Data 1) | ... |
-| :--- | :--- | :--- | :--- | :--- |
-| Agachamento | [Link] | A | Sim | |
-| Supino | [Link] | B | | |
+| A (Exercício) | B (Link GIF) | C (Tipo) | D (Instruções) | E (Data 1) | ... |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Agachamento | [Link] | A | 4x12 pesados | Sim | |
+| Supino | [Link] | B | 3x10 lento | | |
 
 > [!NOTE]
 > O script cria automaticamente a coluna com a data de hoje se ela não existir.
@@ -78,7 +78,7 @@ O aluno insere o CPF. O sistema valida na planilha e redireciona.
 ---
 
 ## 🛠️ O que foi feito
-- [x] **doGet**: Lê a aba do CPF, valida se existe e retorna JSON agrupado por Treino A/B.
-- [x] **doPost**: Atualiza a célula correspondente ao exercício e data com "Sim" ou limpa o valor.
-- [x] **Automação de Datas**: O script identifica a data atual e cria colunas conforme necessário.
-- [x] **CORS & JSON**: Respostas formatadas corretamente para consumo web.
+- [x] **doGet**: Lê a aba do CPF e retorna JSON com instruções (Coluna D).
+- [x] **doPost**: Atualiza a célula correspondente ao exercício e data (Iniciando em Coluna E).
+- [x] **Instruções Exibidas**: Nova seção de texto livre logo abaixo da imagem no PWA.
+- [x] **Automação de Datas**: Identifica e cria colunas de data automaticamente.

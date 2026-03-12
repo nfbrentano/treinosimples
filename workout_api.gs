@@ -35,8 +35,8 @@ function doGet(e) {
     let dateColIndex = -1;
     const headerRow = data[0];
 
-    // Procura a data de hoje a partir da Coluna D (índice 3)
-    for (let i = 3; i < headerRow.length; i++) {
+    // Procura a data de hoje a partir da Coluna E (índice 4)
+    for (let i = 4; i < headerRow.length; i++) {
        const cellValue = headerRow[i];
        let colDateStr = "";
        
@@ -72,12 +72,15 @@ function doGet(e) {
       const exercicio = row[0];
       const gif = row[1];
       const tipo = String(row[2]).toUpperCase();
+      const instrucoes = row[3]; // Coluna D
       const status = row[dateColIndex];
       const concluido = (status === "Sim");
 
       const item = {
         exercicio: exercicio,
         gif: gif,
+        tipo: tipo,
+        instrucoes: instrucoes,
         concluido: concluido
       };
 
@@ -131,9 +134,9 @@ function doPost(e) {
     const data = sheet.getDataRange().getValues();
     const headerRow = data[0];
 
-    // 1. Achar a Coluna da Data
+    // 1. Achar a Coluna da Data (Iniciando na Coluna E/índice 4)
     let dateColIndex = -1;
-    for (let i = 3; i < headerRow.length; i++) {
+    for (let i = 4; i < headerRow.length; i++) {
        const cellValue = headerRow[i];
        let colDateStr = "";
        

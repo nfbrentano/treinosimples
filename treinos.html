@@ -194,6 +194,12 @@
                     <div class="aspect-video w-full bg-neutral-900 relative flex items-center justify-center overflow-hidden">
                         <img alt="${ex.exercicio}" class="w-full h-full object-cover" src="${ex.gif || 'https://via.placeholder.com/400x225?text=Sem+GIF'}" onerror="this.src='https://via.placeholder.com/400x225?text=Sem+GIF'"/>
                     </div>
+                    <!-- Instruções / Repetições -->
+                    <div class="px-5 py-3 bg-white/5 border-b border-white/5">
+                        <p class="text-sm text-gray-300 leading-relaxed font-medium capitalize">
+                            ${ex.instrucoes || 'Sem instruções adicionais'}
+                        </p>
+                    </div>
                     <div class="p-5 pt-4">
                         <div class="relative">
                             <input class="hidden custom-checkbox" id="ex-${currentTab}-${index}" type="checkbox" ${ex.concluido ? 'checked' : ''} onchange="updateLocalStatus('${ex.exercicio}', this.checked, '${currentTab}', ${index})"/>

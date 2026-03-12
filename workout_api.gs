@@ -154,14 +154,20 @@ function doPost(e) {
        sheet.getRange(1, dateColIndex + 1).setValue(targetDate);
     }
 
-    // 2. Processar cada exercício
+    // 2. Limpar a coluna inteira para essa data (row 2 em diante)
+    if (data.length > 1) {
+      sheet.getRange(2, dateColIndex + 1, data.length - 1, 1).clearContent();
+    }
+
+    // 3. Processar cada exercício: marcar 'Sim' somente nos concluídos
     const exerciseNamesInSheet = data.map(row => row[0]);
     
     exerciciosParaAtualizar.forEach(item => {
-      const exerciseRowIndex = exerciseNamesInSheet.indexOf(item.nome);
-      if (exerciseRowIndex !== -1) {
-        const valueToSet = item.concluido ? "Sim" : "";
-        sheet.getRange(exerciseRowIndex + 1, dateColIndex + 1).setValue(valueToSet);
+      if (item.concluido) {
+        const exerciseRowIndex = exerciseNamesInSheet.indexOf(item.nome);
+        if (exerciseRowIndex !== -1) {
+          sheet.getRange(exerciseRowIndex + 1, dateColIndex + 1).setValue("Sim");
+        }
       }
     });
 

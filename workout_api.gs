@@ -31,7 +31,7 @@ function doGet(e) {
     }
 
     // Identifica ou cria a coluna de hoje
-    const todayStr = getTodayDate();
+    const todayStr = getNormalizedDate(new Date(), ss);
     let dateColIndex = -1;
     const headerRow = data[0];
 
@@ -41,9 +41,9 @@ function doGet(e) {
        let colDateStr = "";
        
        if (cellValue instanceof Date) {
-         colDateStr = Utilities.formatDate(cellValue, ss.getSpreadsheetTimeZone(), "dd/MM/yyyy");
+         colDateStr = getNormalizedDate(cellValue, ss);
        } else {
-         colDateStr = String(cellValue);
+         colDateStr = String(cellValue).trim();
        }
 
        if (colDateStr === todayStr) {
@@ -55,8 +55,7 @@ function doGet(e) {
     // Se não encontrou a data de hoje, adiciona uma nova coluna
     if (dateColIndex === -1) {
       dateColIndex = headerRow.length;
-      sheet.getRange(1, dateColIndex + 1).setValue(todayStr);
-      // Atualiza os dados locais para refletir a nova coluna (vazia por enquanto)
+      sheet.getRange(1, dateColIndex + 1).setValue(todayStr); // Salva como string dd/MM/yyyy
       headerRow[dateColIndex] = todayStr;
     }
 
@@ -133,6 +132,8 @@ function doPost(e) {
 
     const data = sheet.getDataRange().getValues();
     const headerRow = data[0];
+    const todayStr = getNormalizedDate(new Date(), ss);
+    const targetDateStr = payload.data || todayStr;
 
     // 1. Achar a Coluna da Data (Iniciando na Coluna E/índice 4)
     let dateColIndex = -1;
@@ -141,12 +142,12 @@ function doPost(e) {
        let colDateStr = "";
        
        if (cellValue instanceof Date) {
-         colDateStr = Utilities.formatDate(cellValue, ss.getSpreadsheetTimeZone(), "dd/MM/yyyy");
+         colDateStr = getNormalizedDate(cellValue, ss);
        } else {
-         colDateStr = String(cellValue);
+         colDateStr = String(cellValue).trim();
        }
 
-       if (colDateStr === targetDate) {
+       if (colDateStr === targetDateStr) {
          dateColIndex = i;
          break;
        }
@@ -154,7 +155,7 @@ function doPost(e) {
 
     if (dateColIndex === -1) {
        dateColIndex = headerRow.length;
-       sheet.getRange(1, dateColIndex + 1).setValue(targetDate);
+       sheet.getRange(1, dateColIndex + 1).setValue(targetDateStr);
     }
 
     // 2. Limpar a coluna inteira para essa data (row 2 em diante)
@@ -182,14 +183,10 @@ function doPost(e) {
 }
 
 /**
- * Helper: Formata a data de hoje como DD/MM/YYYY
+ * Helper: Formata uma data para o padrão dd/MM/yyyy usando a timezone da planilha.
  */
-function getTodayDate() {
-  const now = new Date();
-  const day = String(now.getDate()).padStart(2, '0');
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const year = now.getFullYear();
-  return `${day}/${month}/${year}`;
+function getNormalizedDate(date, ss) {
+  return Utilities.formatDate(date, ss.getSpreadsheetTimeZone(), "dd/MM/yyyy");
 }
 
 /**

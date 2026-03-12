@@ -155,9 +155,7 @@
                 if (response.ok) {
                     // Login Sucesso
                     localStorage.setItem('user_cpf', rawCpf);
-                    alert('Acesso concedido! Carregando treinos...');
-                    // Aqui você redirecionaria para a página de treinos:
-                    // window.location.href = 'treinos.html';
+                    window.location.href = 'treinos.html';
                 } else {
                     showError(data.error || 'Erro ao acessar treinos');
                 }

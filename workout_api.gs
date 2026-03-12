@@ -22,7 +22,7 @@ function doGet(e) {
     const sheet = ss.getSheetByName(cpf);
 
     if (!sheet) {
-      return jsonResponse({ error: "Aluno não encontrado (Aba com CPF não existe)." }, 404);
+      return jsonResponse({ error: "Acesso indevido (CPF não cadastrado)." }, 404);
     }
 
     const data = sheet.getDataRange().getValues();

@@ -213,12 +213,12 @@
             document.getElementById('stat-monthly').innerText = data.monthlyTotal;
             document.getElementById('label-month').innerText = `${data.monthName} ${new Date().getFullYear()}`;
 
-            const monthlyGoalThreshold = (data.weeklyGoal || 3) * 4;
-            const msg = data.monthlyTotal >= monthlyGoalThreshold 
-                ? `Nível Elite! Você atingiu a meta de ${monthlyGoalThreshold} treinos no mês (${data.weeklyGoal}x por semana).`
-                : `Faltam poucos treinos para bater sua meta semanal de ${data.weeklyGoal}! Mantenha o foco.`;
+            const isWeeklyGoalMet = data.weeklyTotal >= data.weeklyGoal;
+            const msg = isWeeklyGoalMet 
+                ? `Nível Elite! Você atingiu sua meta semanal de ${data.weeklyGoal} treinos hoje.`
+                : `Você já treinou ${data.weeklyTotal} vezes esta semana. Faltam ${data.weeklyGoal - data.weeklyTotal} para bater sua meta de ${data.weeklyGoal}!`;
             
-            const title = data.monthlyTotal >= monthlyGoalThreshold ? "ESTADO DE ELITE" : "MANTENHA O RITMO";
+            const title = isWeeklyGoalMet ? "ESTADO DE ELITE" : "MANTENHA O RITMO";
 
             if (document.getElementById('banner-msg-web')) {
                 document.getElementById('banner-msg-web').innerText = msg;
@@ -229,7 +229,9 @@
                 document.getElementById('banner-title-mobile').innerText = title;
             }
 
-            renderCalendar(data.calendarData);
+            if (data.calendarData) {
+                renderCalendar(data.calendarData);
+            }
         }
 
         function renderCalendar(trainedDays) {

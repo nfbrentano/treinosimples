@@ -196,12 +196,12 @@
 
         function updateUI(data) {
             document.getElementById('stat-streak').innerText = `${data.streak} Dias`;
-            document.getElementById('stat-monthly').innerText = `${data.monthlyTotal} Sessões`;
+            document.getElementById('stat-monthly').innerText = data.monthlyTotal;
             document.getElementById('label-month').innerText = `${data.monthName} ${new Date().getFullYear()}`;
 
             const msg = data.monthlyTotal >= 12 
-                ? `Você já realizou ${data.monthlyTotal} treinos este mês. Nível Elite! Sua meta é de ${data.weeklyGoal}x por semana.`
-                : `Você já realizou ${data.monthlyTotal} treinos este mês. Faltam poucos para bater sua meta semanal de ${data.weeklyGoal} treinos!`;
+                ? `Nível Elite! Você está mantendo a meta de ${data.weeklyGoal}x por semana com maestria.`
+                : `Faltam poucos treinos para bater sua meta semanal de ${data.weeklyGoal}! Mantenha o foco.`;
             
             const title = data.monthlyTotal >= 12 ? "ESTADO DE ELITE" : "MANTENHA O RITMO";
 

@@ -96,8 +96,14 @@ function getStudentStats(cpf, ss, sheet) {
   const historyData = historySheet.getDataRange().getDisplayValues();
   
   // Meta Semanal da Célula G1 (Padrão: 3)
-  let weeklyGoal = sheet.getRange("G1").getValue();
-  if (!weeklyGoal || isNaN(weeklyGoal)) weeklyGoal = 3;
+  let cellG1 = sheet.getRange("G1").getValue();
+  let weeklyGoal = 3;
+  if (cellG1 instanceof Date) {
+    weeklyGoal = cellG1.getDate(); // Se o Sheets formatou como data (ex: 04/01/1900), pega o dia (4)
+  } else {
+    weeklyGoal = parseInt(cellG1);
+  }
+  if (isNaN(weeklyGoal) || !weeklyGoal) weeklyGoal = 3;
 
   const trainedDays = new Set(); // Conjunto de datas únicas "dd/MM/yyyy"
   const now = new Date();

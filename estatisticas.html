@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Minhas Estatísticas - Fitness App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "accent": "#0bda87",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        body { min-height: 100dvh; }
+        .bg-primary-glow { background: radial-gradient(circle at center, rgba(236, 91, 19, 0.15) 0%, transparent 70%); }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 z-50 bg-background-dark/80 backdrop-blur-sm flex flex-col items-center justify-center">
+        <div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        <p class="mt-4 text-primary font-bold uppercase tracking-widest text-sm">Carregando dados...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+        <div class="flex items-center p-4 justify-between max-w-md mx-auto w-full">
+            <button onclick="window.location.href='treinos.html'" class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <h1 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center font-display uppercase italic text-primary">Estatísticas</h1>
+            <div class="size-10"></div>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto pb-32 max-w-md mx-auto w-full">
+        <!-- Monthly Habit Calendar Section -->
+        <section class="p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold tracking-tight uppercase italic">Calendário de Hábitos</h2>
+                <span id="label-month" class="text-sm font-medium text-slate-500 dark:text-slate-400">---</span>
+            </div>
+            <div class="bg-primary/5 dark:bg-primary/10 p-6 rounded-2xl border border-primary/10 relative overflow-hidden">
+                <div class="bg-primary-glow absolute inset-0 pointer-events-none"></div>
+                <!-- Habit Grid -->
+                <div id="habit-grid" class="grid grid-cols-7 gap-2 relative z-10">
+                    <!-- Weekday Labels -->
+                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">D</div>
+                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">S</div>
+                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">T</div>
+                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">Q</div>
+                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">Q</div>
+                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">S</div>
+                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">S</div>
+                    <!-- Days will be injected here -->
+                </div>
+                <div class="mt-6 flex items-center justify-center gap-6 text-[10px] font-bold uppercase tracking-widest relative z-10">
+                    <div class="flex items-center gap-2">
+                        <div class="size-3 rounded-sm bg-slate-200 dark:bg-slate-800"></div>
+                        <span class="text-slate-500">Sem treino</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="size-3 rounded-sm bg-accent shadow-[0_0_8px_rgba(11,218,135,0.4)]"></div>
+                        <span class="text-accent">Treinado</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="px-6 pb-8 space-y-4">
+            <div class="flex gap-4">
+                <div class="flex flex-1 flex-col gap-3 rounded-2xl p-5 bg-primary/10 border border-primary/20">
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-primary text-3xl">local_fire_department</span>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">Ofensiva Atual</p>
+                        <p id="stat-streak" class="text-2xl font-black tracking-tight"><span class="animate-pulse">--</span> Dias</p>
+                    </div>
+                </div>
+                <div class="flex flex-1 flex-col gap-3 rounded-2xl p-5 bg-primary/10 border border-primary/20">
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-primary text-3xl">fitness_center</span>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">No Mês</p>
+                        <p id="stat-monthly" class="text-2xl font-black tracking-tight"><span class="animate-pulse">--</span> Treinos</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Motivational Banner -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/60 p-6 text-white shadow-xl shadow-primary/10">
+                <div class="relative z-10">
+                    <h3 id="banner-title" class="text-lg font-black mb-1 italic uppercase underline decoration-accent underline-offset-4">Mantenha o ritmo!</h3>
+                    <p id="banner-msg" class="text-sm font-medium leading-relaxed opacity-90">Carregando sua meta pessoal...</p>
+                </div>
+                <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl opacity-20 rotate-12 scale-150">trending_up</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 z-20 border-t border-primary/10 bg-background-light dark:bg-background-dark px-4 pb-6 pt-2">
+        <div class="flex items-center justify-around max-w-md mx-auto">
+            <a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-all duration-200" href="treinos.html">
+                <span class="material-symbols-outlined text-[28px]">pool</span>
+                <p class="text-[10px] font-bold uppercase">Treino</p>
+            </a>
+            <a class="flex flex-col items-center gap-1 text-primary scale-110" href="estatisticas.html">
+                <span class="material-symbols-outlined text-[28px] fill-[1]">bar_chart</span>
+                <p class="text-[10px] font-black uppercase">Estatísticas</p>
+            </a>
+            <a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-all duration-200" href="#" onclick="logout()">
+                <span class="material-symbols-outlined text-[28px]">person</span>
+                <p class="text-[10px] font-bold uppercase">Sair</p>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwnj6G5k-AxCVeWng252LJJhGgVm551llXwT3JiiZil3l_KTo-1vczNdnec9xnWFeFADQ/exec';
+        const userCpf = localStorage.getItem('user_cpf');
+
+        if (!userCpf) {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchStats);
+
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${API_URL}?cpf=${userCpf}&action=getStats`);
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                    logout();
+                    return;
+                }
+
+                updateUI(data);
+            } catch (error) {
+                console.error('Erro ao buscar estatísticas:', error);
+            } finally {
+                document.getElementById('loading-overlay').classList.add('hidden');
+            }
+        }
+
+        function updateUI(data) {
+            // Stats principais
+            document.getElementById('stat-streak').innerText = `${data.streak} Dias`;
+            document.getElementById('stat-monthly').innerText = `${data.monthlyTotal} Treinos`;
+            document.getElementById('label-month').innerText = `${data.monthName} ${new Date().getFullYear()}`;
+
+            // Banner motivacional
+            const remaining = data.weeklyGoal - (data.monthlyTotal % data.weeklyGoal || data.weeklyGoal); 
+            // Mock logic for banner: assumes goal is weekly, but we show distance to monthly equivalent or just standard msg
+            if (data.monthlyTotal >= 15) {
+                document.getElementById('banner-title').innerText = "Nível Elite!";
+                document.getElementById('banner-msg').innerText = `Você já treinou ${data.monthlyTotal} vezes este mês. Excelente consistência!`;
+            } else {
+                document.getElementById('banner-msg').innerText = `Você já realizou ${data.monthlyTotal} treinos este mês. Sua meta semanal é de ${data.weeklyGoal} treinos. Continue firme!`;
+            }
+
+            // Calendário
+            renderCalendar(data.calendarData);
+        }
+
+        function renderCalendar(trainedDays) {
+            const grid = document.getElementById('habit-grid');
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Adiciona espaços vazios para o início do mês
+            for (let i = 0; i < firstDay; i++) {
+                const empty = document.createElement('div');
+                empty.className = "aspect-square rounded-sm bg-transparent";
+                grid.appendChild(empty);
+            }
+
+            // Adiciona os dias do mês
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${String(day).padStart(2, '0')}/${String(month+1).padStart(2, '0')}/${year}`;
+                const hasTrained = trainedDays.includes(dateStr);
+                
+                const dot = document.createElement('div');
+                dot.className = `aspect-square rounded-sm transition-all duration-500 ${
+                    hasTrained 
+                    ? 'bg-accent shadow-[0_0_8px_rgba(11,218,135,0.4)]' 
+                    : 'bg-slate-200 dark:bg-slate-800'
+                }`;
+                
+                // Realce do dia atual
+                if (day === now.getDate()) {
+                    dot.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background-dark');
+                }
+
+                grid.appendChild(dot);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('user_cpf');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

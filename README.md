@@ -1,6 +1,6 @@
-# Guia: Backend Google Apps Script (Log Centralizado)
+# Guia: Backend Google Apps Script (Log Centralizado & Estatísticas)
 
-Este projeto utiliza um modelo de **Histórico Centralizado**, garantindo que o sistema seja escalável, rápido e fácil de gerenciar pelo Personal Trainer.
+Este projeto utiliza um modelo de **Histórico Centralizado**, garantindo que o sistema seja escalável, rápido e fácil de gerenciar pelo Personal Trainer. Além disso, conta com um Painel de Estatísticas moderno.
 
 ## 🚀 Como Deployar (Implantar)
 
@@ -19,51 +19,50 @@ Este projeto utiliza um modelo de **Histórico Centralizado**, garantindo que o 
 ## 📋 Estrutura da Planilha
 
 ### Abas dos Alunos (Nomeadas com o CPF)
-O script lê as colunas de A a D. Não é necessário criar colunas de data aqui.
+O script lê as colunas de A a D. Use a **Célula G1** para definir a meta semanal.
 
-| A (Exercício) | B (Link GIF/MP4) | C (Tipo) | D (Instruções) |
-| :--- | :--- | :--- | :--- |
-| Agachamento | [Link] | A | 4x12 pesados |
-| Supino | [Link] | B | 3x10 lento |
-| Smith Machine | [Link] | C | 3x15 reps |
+| A (Exercício) | B (Link GIF/MP4) | C (Tipo) | D (Instruções) | ... | G1 (Meta Semanal) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Agachamento | [Link] | A | 4x12 pesados | | **4** |
+| Supino | [Link] | B | 3x10 lento | | |
 
 ### Aba HISTORICO (Criada Automaticamente)
 Onde todos os treinos concluídos são registrados verticalmente:
 | DATA/HORA | CPF | EXERCICIO | TREINO | STATUS |
 | :--- | :--- | :--- | :--- | :--- |
-| 12/03/2026 21:30 | 123... | Agachamento | A | SIM |
+| 13/03/2026 10:15 | 123... | Agachamento | A | SIM |
 
 ---
 
 ## 🔌 Uso da API
 
-URL Base: `https://script.google.com/macros/s/AKfycbwnj6G5k-AxCVeWng252LJJhGgVm551llXwT3JiiZil3l_KTo-1vczNdnec9xnWFeFADQ/exec`
+URL Base: `https://script.google.com/macros/s/.../exec`
 
 ### 1. Carregar Treinos (GET)
 `...?cpf=12345678900`
-O sistema agrupa os exercícios por tipo (A, B, C...) e verifica na aba `HISTORICO` o que já foi feito **hoje**.
+Retorna os exercícios agrupados por tipo (A, B, C...).
 
-### 2. Salvar Treino (POST)
+### 2. Carregar Estatísticas (GET)
+`...?cpf=12345678900&action=getStats`
+Retorna:
+- `streak`: Ofensiva atual (dias seguidos).
+- `monthlyTotal`: Total de treinos no mês atual.
+- `weeklyGoal`: Meta definida na célula G1.
+- `calendarData`: Lista de datas treinadas para o calendário estilo GitHub.
+
+### 3. Salvar Treino (POST)
 Envia o status de todos os treinos para o log central.
-```json
-{
-  "cpf": "12345678900",
-  "exercicios": [
-    { "nome": "Agachamento", "tipo": "A", "concluido": true },
-    { "nome": "Supino", "tipo": "B", "concluido": false }
-  ]
-}
-```
 
 ---
 
 ## 📱 Funcionalidades do PWA
-- **Abas Dinâmicas**: Suporta de A a E automaticamente baseado na Coluna C.
+- **Painel de Estatísticas**: Visualização estilo GitHub para consistência de hábitos.
+- **Cálculo de Ofensiva**: Mantém o aluno motivado com o contador de dias seguidos.
+- **Abas Dinâmicas**: Suporta automaticamente as categorias definidas na Coluna C.
 - **Vídeo & GIF**: Reprodução automática para links `.mp4` na Coluna B.
-- **Modo Offline**: O progresso é salvo no celular (`LocalStorage`) e sincronizado ao clicar em "Salvar".
-- **Histórico Escalável**: O Personal Trainer pode gerar relatórios de todos os alunos filtrando uma única aba.
+- **CPF Seguro**: Suporte nativo para CPFs que começam com zero, tratando-os sempre como texto.
 
 ---
 
 ## 🛠️ Manutenção
-Se você adicionar um novo exercício ou mudar o treino de um aluno, basta editar a aba correspondente ao CPF dele. O aplicativo refletirá a mudança na próxima vez que for carregado.
+Para mudar a meta de um aluno, basta alterar o número na **Célula G1** da aba dele. O App de Estatísticas atualizará a barra de progresso e as mensagens motivacionais automaticamente.

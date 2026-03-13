@@ -59,18 +59,17 @@ function doGet(e) {
       headerRow[dateColIndex] = todayStr;
     }
 
-    // Organiza os treinos por Tipo (A ou B)
-    const result = {
-      treinoA: [],
-      treinoB: []
-    };
+    // Organiza os treinos por Tipo (A, B, C, D, E...)
+    const workouts = {};
 
     // Pula o cabeçalho (i=1)
     for (let i = 1; i < data.length; i++) {
       const row = data[i];
       const exercicio = row[0];
+      if (!exercicio) continue; // Pula linhas vazias
+
       const gif = row[1];
-      const tipo = String(row[2]).toUpperCase();
+      const tipo = String(row[2]).toUpperCase().trim();
       const instrucoes = row[3]; // Coluna D
       const status = row[dateColIndex];
       const concluido = (status === "Sim");
@@ -83,14 +82,13 @@ function doGet(e) {
         concluido: concluido
       };
 
-      if (tipo === "A") {
-        result.treinoA.push(item);
-      } else if (tipo === "B") {
-        result.treinoB.push(item);
+      if (!workouts[tipo]) {
+        workouts[tipo] = [];
       }
+      workouts[tipo].push(item);
     }
 
-    return jsonResponse(result);
+    return jsonResponse({ workouts: workouts });
 
   } catch (err) {
     return jsonResponse({ error: err.toString() }, 500);

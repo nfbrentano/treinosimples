@@ -118,7 +118,7 @@
 
     <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbwnj6G5k-AxCVeWng252LJJhGgVm551llXwT3JiiZil3l_KTo-1vczNdnec9xnWFeFADQ/exec';
-        let workoutData = { treinoA: [], treinoB: [] };
+        let workoutData = { workouts: {} };
         let currentTab = 'A';
         const userCpf = localStorage.getItem('user_cpf');
 
@@ -145,6 +145,16 @@
 
                 // Mesclar com o que está no LocalStorage (pendente de salvar)
                 workoutData = mergeWithLocalStorage(data);
+                
+                // Renderizar abas primeiro
+                renderTabs();
+                
+                // Definir primeira aba como ativa se houver dados
+                const tabKeys = Object.keys(workoutData.workouts).sort();
+                if (tabKeys.length > 0 && !tabKeys.includes(currentTab)) {
+                    currentTab = tabKeys[0];
+                }
+                
                 renderWorkouts();
             } catch (error) {
                 console.error('Erro ao buscar treinos:', error);
@@ -154,17 +164,46 @@
             }
         }
 
+        function renderTabs() {
+            const tabsContainer = document.getElementById('workout-tabs');
+            const tabKeys = Object.keys(workoutData.workouts).sort();
+            
+            tabsContainer.innerHTML = '';
+            tabKeys.forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${currentTab === key ? 'bg-brand-primary text-black' : 'text-gray-400'}`;
+                btn.setAttribute('data-tab', key);
+                btn.innerText = `Treino ${key}`;
+                btn.onclick = () => switchTab(key);
+                tabsContainer.appendChild(btn);
+            });
+        }
+
+        function switchTab(key) {
+            currentTab = key;
+            const tabButtons = document.querySelectorAll('#workout-tabs button');
+            tabButtons.forEach(btn => {
+                if (btn.getAttribute('data-tab') === key) {
+                    btn.classList.add('bg-brand-primary', 'text-black');
+                    btn.classList.remove('text-gray-400');
+                } else {
+                    btn.classList.remove('bg-brand-primary', 'text-black');
+                    btn.classList.add('text-gray-400');
+                }
+            });
+            renderWorkouts();
+        }
+
         function mergeWithLocalStorage(serverData) {
             const localKey = `pending_${userCpf}`;
             const localData = JSON.parse(localStorage.getItem(localKey) || '{}');
 
             Object.keys(localData).forEach(exName => {
-                // Tenta achar no treino A ou B e sobrescreve
-                const exA = serverData.treinoA.find(e => e.exercicio === exName);
-                if (exA) exA.concluido = localData[exName];
-
-                const exB = serverData.treinoB.find(e => e.exercicio === exName);
-                if (exB) exB.concluido = localData[exName];
+                // Procura em todas as abas dinâmicas
+                Object.keys(serverData.workouts).forEach(tabKey => {
+                    const ex = serverData.workouts[tabKey].find(e => e.exercicio === exName);
+                    if (ex) ex.concluido = localData[exName];
+                });
             });
 
             return serverData;
@@ -172,7 +211,7 @@
 
         function renderWorkouts() {
             const list = document.getElementById('exercise-list');
-            const data = currentTab === 'A' ? workoutData.treinoA : workoutData.treinoB;
+            const data = workoutData.workouts[currentTab] || [];
             
             list.innerHTML = '';
             
@@ -235,8 +274,9 @@
 
         function updateLocalStatus(exercicio, isChecked, tab, index) {
             // Atualiza dado local na memória
-            if (tab === 'A') workoutData.treinoA[index].concluido = isChecked;
-            else workoutData.treinoB[index].concluido = isChecked;
+            if (workoutData.workouts[tab] && workoutData.workouts[tab][index]) {
+                workoutData.workouts[tab][index].concluido = isChecked;
+            }
 
             // Salva no LocalStorage
             const localKey = `pending_${userCpf}`;
@@ -246,14 +286,19 @@
 
             // Atualiza UI
             const labelSpan = document.querySelector(`label[for="ex-${tab}-${index}"] span`);
-            labelSpan.innerText = isChecked ? 'CONCLUÍDO' : 'MARCAR CONCLUÍDO';
+            if (labelSpan) labelSpan.innerText = isChecked ? 'CONCLUÍDO' : 'MARCAR CONCLUÍDO';
             updateProgress();
         }
 
         async function saveWorkout() {
             setLoading(true);
             
-            const allExercises = [...workoutData.treinoA, ...workoutData.treinoB];
+            // Coleta todos os exercícios de todas as abas
+            const allExercises = [];
+            Object.keys(workoutData.workouts).forEach(tabKey => {
+                allExercises.push(...workoutData.workouts[tabKey]);
+            });
+
             const payload = {
                 cpf: userCpf,
                 exercicios: allExercises.map(e => ({
@@ -285,7 +330,7 @@
         }
 
         function updateProgress() {
-            const data = currentTab === 'A' ? workoutData.treinoA : workoutData.treinoB;
+            const data = workoutData.workouts[currentTab] || [];
             const total = data.length;
             const completed = data.filter(ex => ex.concluido).length;
             const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -293,20 +338,6 @@
             document.getElementById('progress-text').innerText = `${percentage}%`;
             document.getElementById('progress-bar').style.width = `${percentage}%`;
         }
-
-        const tabButtons = document.querySelectorAll('#workout-tabs button');
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                currentTab = btn.getAttribute('data-tab');
-                tabButtons.forEach(b => {
-                    b.classList.remove('bg-brand-primary', 'text-black');
-                    b.classList.add('text-gray-400');
-                });
-                btn.classList.add('bg-brand-primary', 'text-black');
-                btn.classList.remove('text-gray-400');
-                renderWorkouts();
-            });
-        });
 
         function setLoading(isLoading) {
             document.getElementById('loading-overlay').classList.toggle('hidden', !isLoading);

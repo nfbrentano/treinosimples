@@ -30,7 +30,7 @@ function doGet(e) {
 
     // Se a ação for estatísticas
     if (action === 'getStats') {
-      return getStudentStats(cpf, ss, sheet);
+      return jsonResponse(getStudentStats(cpf, ss, sheet));
     }
 
     // Comportamento padrão: Retornar exercícios do dia
@@ -88,47 +88,65 @@ function getStudentWorkouts(cpf, ss, sheet) {
   return jsonResponse({ workouts });
 }
 
-/**
- * Lógica para calcular estatísticas (Streak, Total Mensal, Calendário).
- */
 function getStudentStats(cpf, ss, sheet) {
   const historySheet = getOrCreateHistorySheet(ss);
-  const historyData = historySheet.getDataRange().getDisplayValues();
+  const historyRawData = historySheet.getDataRange().getValues(); // Usa valores reais (objetos Date)
   
   // Meta Semanal da Célula G1 (Padrão: 3)
   let cellG1 = sheet.getRange("G1").getValue();
   let weeklyGoal = 3;
   if (cellG1 instanceof Date) {
-    weeklyGoal = cellG1.getDate(); // Se o Sheets formatou como data (ex: 04/01/1900), pega o dia (4)
+    weeklyGoal = cellG1.getDate(); 
   } else {
     weeklyGoal = parseInt(cellG1);
   }
   if (isNaN(weeklyGoal) || !weeklyGoal) weeklyGoal = 3;
 
-  const trainedDays = new Set(); // Conjunto de datas únicas "dd/MM/yyyy"
+  const uniqueTrainedDates = new Set(); // Conjunto de chaves "yyyy-mm-dd"
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
   let monthlyTotal = 0;
 
-  for (let i = 1; i < historyData.length; i++) {
-    const row = historyData[i];
+  for (let i = 1; i < historyRawData.length; i++) {
+    const row = historyRawData[i];
     const rowCpf = normalizeCpf(row[1]);
     if (rowCpf !== cpf) continue;
 
-    const rowFullDateStr = String(row[0]); // "dd/MM/yyyy HH:mm:ss"
-    const rowDateStr = rowFullDateStr.split(' ')[0]; // "dd/MM/yyyy"
+    // Garante que temos um objeto Date válido
+    let rowDate = row[0];
+    if (!(rowDate instanceof Date)) {
+      // Tenta converter se for string (legado)
+      rowDate = new Date(String(row[0]).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
+    }
     
-    if (String(row[4]).trim().toUpperCase() === "SIM") {
-      trainedDays.add(rowDateStr);
+    if (isNaN(rowDate.getTime())) continue;
+
+    // Chave única para o dia (para deduplicar treinos no mesmo dia)
+    const dateKey = Utilities.formatDate(rowDate, "GMT-3", "yyyy-MM-dd");
+    const concluido = String(row[4]).trim().toUpperCase() === "SIM";
+
+    if (concluido) {
+      uniqueTrainedDates.add(dateKey);
+      
+      // Conta treinos apenas do mês/ano atual
+      if (rowDate.getMonth() === currentMonth && rowDate.getFullYear() === currentYear) {
+        // Para o total do mês, ainda precisamos deduplicar por dia
+        // Então calcularemos o total mensal a partir do Set final para ser mais seguro
+      }
     }
   }
 
-  // Conta dias únicos no mês atual
-  trainedDays.forEach(dateStr => {
-    const parts = dateStr.split('/');
+  // Prepara dados para o calendário (formato dd/MM/yyyy que o frontend espera)
+  const calendarData = [];
+  uniqueTrainedDates.forEach(dateKey => {
+    const parts = dateKey.split('-');
+    const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+    calendarData.push(formatted);
+    
+    // Conta treinos apenas do mês/ano atual para o total
+    const y = parseInt(parts[0]);
     const m = parseInt(parts[1]) - 1;
-    const y = parseInt(parts[2]);
     if (m === currentMonth && y === currentYear) {
       monthlyTotal++;
     }
@@ -139,24 +157,26 @@ function getStudentStats(cpf, ss, sheet) {
   let checkDate = new Date();
   checkDate.setHours(0, 0, 0, 0);
 
+  // Helper para comparar no formato yyyy-MM-dd
+  const toKey = (d) => Utilities.formatDate(d, "GMT-3", "yyyy-MM-dd");
+
   // Se não treinou hoje, verifica se treinou ontem para manter a streak viva
-  const todayStr = getNormalizedDate(checkDate, ss);
-  if (!trainedDays.has(todayStr)) {
+  if (!uniqueTrainedDates.has(toKey(checkDate))) {
     checkDate.setDate(checkDate.getDate() - 1);
   }
 
-  while (trainedDays.has(getNormalizedDate(checkDate, ss))) {
+  while (uniqueTrainedDates.has(toKey(checkDate))) {
     streak++;
     checkDate.setDate(checkDate.getDate() - 1);
   }
 
-  return jsonResponse({
-    streak: streak,
-    monthlyTotal: monthlyTotal,
-    weeklyGoal: weeklyGoal,
-    calendarData: Array.from(trainedDays),
-    monthName: getMonthName(currentMonth)
-  });
+  return {
+    streak,
+    monthlyTotal,
+    weeklyGoal,
+    monthName: getMonthName(currentMonth),
+    calendarData
+  };
 }
 
 /**

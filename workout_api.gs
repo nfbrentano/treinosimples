@@ -30,25 +30,24 @@ function doGet(e) {
       return jsonResponse({ error: "Nenhum dado de treino encontrado nesta aba." }, 404);
     }
 
-    // Identifica ou cria a coluna de hoje
+    // Identifica o histórico de hoje
     const todayStr = getNormalizedDate(new Date(), ss);
-    let dateColIndex = -1;
-    const headerRowDisplay = sheet.getRange(1, 1, 1, sheet.getLastColumn() || 1).getDisplayValues()[0];
+    const historySheet = getOrCreateHistorySheet(ss);
+    const historyData = historySheet.getDataRange().getValues();
+    
+    // Filtra exercícios concluídos hoje para este CPF
+    const completedToday = new Set();
+    for (let i = 1; i < historyData.length; i++) {
+        const row = historyData[i];
+        // Col 0: Data/Hora, Col 1: CPF, Col 2: Exercicio, Col 3: Treino, Col 4: Status
+        const rowDate = getNormalizedDate(row[0] instanceof Date ? row[0] : new Date(row[0]), ss);
+        const rowCpf = String(row[1]).trim();
+        const rowEx = String(row[2]).trim().toUpperCase();
+        const rowStatus = String(row[4]).trim().toUpperCase();
 
-    // Procura a data de hoje a partir da Coluna E (índice 4)
-    for (let i = 4; i < headerRowDisplay.length; i++) {
-       const colDateStr = headerRowDisplay[i].trim();
-       if (colDateStr === todayStr) {
-         dateColIndex = i;
-         break;
-       }
-    }
-
-    // Se não encontrou a data de hoje, adiciona uma nova coluna
-    if (dateColIndex === -1) {
-      dateColIndex = headerRowDisplay.length;
-      if (dateColIndex < 4) dateColIndex = 4; // Garante que comece no mínimo em E
-      sheet.getRange(1, dateColIndex + 1).setValue(todayStr); // Salva como string dd/MM/yyyy
+        if (rowDate === todayStr && rowCpf === cpf && rowStatus === "SIM") {
+            completedToday.add(rowEx);
+        }
     }
 
     // Organiza os treinos por Tipo (A, B, C, D, E...)
@@ -60,11 +59,11 @@ function doGet(e) {
       const exercicio = String(row[0]).trim();
       if (!exercicio) continue; // Pula linhas vazias
 
+      const exercicioUpper = exercicio.toUpperCase();
       const gif = row[1];
       const tipo = String(row[2]).toUpperCase().trim();
       const instrucoes = row[3]; // Coluna D
-      const status = row[dateColIndex];
-      const concluido = (status === "Sim");
+      const concluido = completedToday.has(exercicioUpper);
 
       const item = {
         exercicio: exercicio,
@@ -88,23 +87,21 @@ function doGet(e) {
 }
 
 /**
- * Função POST: Marca ou desmarca um exercício como concluído.
- * Payload JSON: { "cpf": "...", "exercicio": "...", "concluido": true, "data": "opcional" }
+ * Função POST: Salva o progresso do treino no histórico centralizado.
  */
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
     const cpf = payload.cpf;
-    const targetDate = payload.data || getTodayDate();
     
     // Lista de exercícios para atualizar
     let exerciciosParaAtualizar = [];
-    
     if (payload.exercicios && Array.isArray(payload.exercicios)) {
       exerciciosParaAtualizar = payload.exercicios;
     } else if (payload.exercicio) {
       exerciciosParaAtualizar.push({
         nome: payload.exercicio,
+        tipo: payload.tipo,
         concluido: payload.concluido
       });
     }
@@ -114,52 +111,20 @@ function doPost(e) {
     }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName(cpf);
+    const historySheet = getOrCreateHistorySheet(ss);
+    const now = new Date();
+    const timestamp = Utilities.formatDate(now, ss.getSpreadsheetTimeZone(), "dd/MM/yyyy HH:mm:ss");
 
-    if (!sheet) {
-      return jsonResponse({ error: "Aba do CPF não encontrada." }, 404);
-    }
-
-    const data = sheet.getDataRange().getValues();
-    const headerRowDisplay = sheet.getRange(1, 1, 1, sheet.getLastColumn() || 1).getDisplayValues()[0];
-    const todayStr = getNormalizedDate(new Date(), ss);
-    const targetDateStr = payload.data || todayStr;
-
-    // 1. Achar a Coluna da Data (Iniciando na Coluna E/índice 4)
-    let dateColIndex = -1;
-    for (let i = 4; i < headerRowDisplay.length; i++) {
-       const colDateStr = headerRowDisplay[i].trim();
-       if (colDateStr === targetDateStr) {
-         dateColIndex = i;
-         break;
-       }
-    }
-
-    if (dateColIndex === -1) {
-       dateColIndex = headerRowDisplay.length;
-       if (dateColIndex < 4) dateColIndex = 4;
-       sheet.getRange(1, dateColIndex + 1).setValue(targetDateStr);
-    }
-
-    // 2. Limpar a coluna inteira para essa data (row 2 em diante)
-    if (data.length > 1) {
-      sheet.getRange(2, dateColIndex + 1, data.length - 1, 1).clearContent();
-    }
-
-    // 3. Processar cada exercício: buscar por Nome (Col A) e Tipo (Col C)
-    // Cria chaves "NOME|TIPO" para todas as linhas
-    const rowKeys = data.map(row => `${String(row[0]).trim().toUpperCase()}|${String(row[2]).trim().toUpperCase()}`);
-    
+    // Adiciona cada exercício concluído ao histórico
     exerciciosParaAtualizar.forEach(item => {
       if (item.concluido) {
-        const targetName = String(item.nome || item.exercicio).trim().toUpperCase();
-        const targetType = String(item.tipo).trim().toUpperCase();
-        const targetKey = `${targetName}|${targetType}`;
-        
-        const exerciseRowIndex = rowKeys.indexOf(targetKey);
-        if (exerciseRowIndex !== -1) {
-          sheet.getRange(exerciseRowIndex + 1, dateColIndex + 1).setValue("Sim");
-        }
+        historySheet.appendRow([
+          timestamp,
+          cpf,
+          item.nome || item.exercicio,
+          item.tipo || "N/A",
+          "SIM"
+        ]);
       }
     });
 
@@ -171,20 +136,34 @@ function doPost(e) {
 }
 
 /**
- * Helper: Formata uma data para o padrão dd/MM/yyyy usando a timezone da planilha.
+ * Helper: Garante que a aba HISTORICO existe com o cabeçalho correto.
  */
-function getNormalizedDate(date, ss) {
-  return Utilities.formatDate(date, ss.getSpreadsheetTimeZone(), "dd/MM/yyyy");
+function getOrCreateHistorySheet(ss) {
+  let sheet = ss.getSheetByName("HISTORICO");
+  if (!sheet) {
+    sheet = ss.insertSheet("HISTORICO");
+    sheet.appendRow(["DATA/HORA", "CPF", "EXERCICIO", "TREINO", "STATUS"]);
+    sheet.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#f3f3f3");
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
 }
 
 /**
- * Helper: Retorna a resposta no formato JSON com suporte a CORS.
+ * Helper: Formata uma data para o padrão dd/MM/yyyy usando a timezone da planilha.
+ */
+function getNormalizedDate(date, ss) {
+  try {
+    return Utilities.formatDate(date, ss.getSpreadsheetTimeZone(), "dd/MM/yyyy");
+  } catch(e) {
+    return "";
+  }
+}
+
+/**
+ * Helper: Retorna a resposta no formato JSON.
  */
 function jsonResponse(obj, status) {
-  const output = ContentService.createTextOutput(JSON.stringify(obj))
+  return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
-  
-  // O Google Apps Script Web App lida com CORS nativamente em redirecionamentos, 
-  // mas ContentService retorna os headers corretos para consumo via fetch.
-  return output;
 }

@@ -71,8 +71,7 @@
         </div>
 
         <div class="flex p-1 bg-neutral-800 rounded-xl mb-6" id="workout-tabs">
-            <button class="flex-1 py-2 text-sm font-bold rounded-lg transition-all bg-brand-primary text-black" data-tab="A">Treino A</button>
-            <button class="flex-1 py-2 text-sm font-bold rounded-lg transition-all text-gray-400" data-tab="B">Treino B</button>
+            <!-- Abas serão geradas aqui dinamicamente -->
         </div>
 
         <!-- ProgressSection -->
@@ -198,13 +197,29 @@
             const localKey = `pending_${userCpf}`;
             const localData = JSON.parse(localStorage.getItem(localKey) || '{}');
 
-            Object.keys(localData).forEach(exName => {
-                // Procura em todas as abas dinâmicas
-                Object.keys(serverData.workouts).forEach(tabKey => {
-                    const ex = serverData.workouts[tabKey].find(e => e.exercicio === exName);
-                    if (ex) ex.concluido = localData[exName];
+            // Verifica se o servidor já está no formato novo (workouts: {})
+            if (serverData.workouts) {
+                Object.keys(localData).forEach(exName => {
+                    Object.keys(serverData.workouts).forEach(tabKey => {
+                        const ex = serverData.workouts[tabKey].find(e => e.exercicio === exName);
+                        if (ex) ex.concluido = localData[exName];
+                    });
                 });
-            });
+            } else {
+                // Legado: suporte temporário para a estrutura antiga
+                const workouts = {
+                    'A': serverData.treinoA || [],
+                    'B': serverData.treinoB || []
+                };
+                Object.keys(localData).forEach(exName => {
+                    Object.keys(workouts).forEach(key => {
+                        const ex = workouts[key].find(e => e.exercicio === exName);
+                        if (ex) ex.concluido = localData[exName];
+                    });
+                });
+                serverData.workouts = workouts;
+                alert("Atenção: Por favor, atualize o script na sua planilha (Apps Script) para habilitar o Treino C.");
+            }
 
             return serverData;
         }

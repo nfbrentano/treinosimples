@@ -92,14 +92,19 @@ function getStudentStats(cpf, ss, sheet) {
   const historySheet = getOrCreateHistorySheet(ss);
   const historyRawData = historySheet.getDataRange().getValues(); // Usa valores reais (objetos Date)
   
-  // Meta Semanal da Célula G1 (Padrão: 3)
-  let cellG1 = sheet.getRange("G1").getValue();
+  // Meta Semanal da Célula G1 ou G2 (Padrão: 3)
+  // Alguns usuários colocam o rótulo em G1 e o número em G2
+  let valG1 = sheet.getRange("G1").getValue();
+  let valG2 = sheet.getRange("G2").getValue();
   let weeklyGoal = 3;
-  if (cellG1 instanceof Date) {
-    weeklyGoal = cellG1.getDate(); 
-  } else {
-    weeklyGoal = parseInt(cellG1);
+
+  function parseGoal(val) {
+    if (val instanceof Date) return val.getDate();
+    let num = parseInt(val);
+    return isNaN(num) ? null : num;
   }
+
+  weeklyGoal = parseGoal(valG1) || parseGoal(valG2) || 3;
   if (isNaN(weeklyGoal) || !weeklyGoal) weeklyGoal = 3;
 
   const uniqueTrainedDates = new Set(); // Conjunto de chaves "yyyy-mm-dd"

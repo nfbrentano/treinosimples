@@ -65,7 +65,7 @@ function doGet(e) {
     // Pula o cabeçalho (i=1)
     for (let i = 1; i < data.length; i++) {
       const row = data[i];
-      const exercicio = row[0];
+      const exercicio = String(row[0]).trim();
       if (!exercicio) continue; // Pula linhas vazias
 
       const gif = row[1];
@@ -162,11 +162,12 @@ function doPost(e) {
     }
 
     // 3. Processar cada exercício: marcar 'Sim' somente nos concluídos
-    const exerciseNamesInSheet = data.map(row => row[0]);
+    const exerciseNamesInSheet = data.map(row => String(row[0]).trim().toUpperCase());
     
     exerciciosParaAtualizar.forEach(item => {
       if (item.concluido) {
-        const exerciseRowIndex = exerciseNamesInSheet.indexOf(item.nome);
+        const targetName = String(item.nome).trim().toUpperCase();
+        const exerciseRowIndex = exerciseNamesInSheet.indexOf(targetName);
         if (exerciseRowIndex !== -1) {
           sheet.getRange(exerciseRowIndex + 1, dateColIndex + 1).setValue("Sim");
         }

@@ -121,6 +121,19 @@
                     </div>
                 </div>
 
+                <!-- Weekly Progress Card -->
+                <div class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
+                    <div class="flex items-center justify-between">
+                        <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary text-4xl">calendar_view_week</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">Treinos na Semana</p>
+                        <p id="stat-weekly" class="text-4xl font-black tracking-tighter text-white"><span class="animate-pulse">--</span> de --</p>
+                    </div>
+                </div>
+
                 <!-- Monthly Total Card -->
                 <div class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
                     <div class="flex items-center justify-between">
@@ -196,6 +209,7 @@
 
         function updateUI(data) {
             document.getElementById('stat-streak').innerText = `${data.streak} Dias`;
+            document.getElementById('stat-weekly').innerText = `${data.weeklyTotal} de ${data.weeklyGoal}`;
             document.getElementById('stat-monthly').innerText = data.monthlyTotal;
             document.getElementById('label-month').innerText = `${data.monthName} ${new Date().getFullYear()}`;
 

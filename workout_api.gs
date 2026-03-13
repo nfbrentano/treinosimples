@@ -142,18 +142,32 @@ function getStudentStats(cpf, ss, sheet) {
     }
   }
 
-  // Prepara dados para o calendário (formato dd/MM/yyyy que o frontend espera)
+  // Prepara datas para o calendário (formato dd/MM/yyyy que o frontend espera)
   const calendarData = [];
+  let weeklyTotal = 0;
+  
+  // Calcula o início da semana atual (Segunda-feira)
+  const monday = new Date(now);
+  const dayOfWeek = monday.getDay(); // 0 (Dom) a 6 (Sab)
+  const diff = monday.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1); // Ajusta para Segunda
+  monday.setDate(diff);
+  monday.setHours(0, 0, 0, 0);
+
   uniqueTrainedDates.forEach(dateKey => {
     const parts = dateKey.split('-');
     const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
     calendarData.push(formatted);
     
-    // Conta treinos apenas do mês/ano atual para o total
-    const y = parseInt(parts[0]);
-    const m = parseInt(parts[1]) - 1;
-    if (m === currentMonth && y === currentYear) {
+    const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+
+    // Conta treinos apenas do mês/ano atual para o total mensal
+    if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
       monthlyTotal++;
+    }
+
+    // Treinos na semana atual (Segunda a Domingo)
+    if (d >= monday) {
+      weeklyTotal++;
     }
   });
 
@@ -178,6 +192,7 @@ function getStudentStats(cpf, ss, sheet) {
   return {
     streak,
     monthlyTotal,
+    weeklyTotal,
     weeklyGoal,
     monthName: getMonthName(currentMonth),
     calendarData

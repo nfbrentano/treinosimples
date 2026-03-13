@@ -33,19 +33,19 @@ function doGet(e) {
     // Identifica o histórico de hoje
     const todayStr = getNormalizedDate(new Date(), ss);
     const historySheet = getOrCreateHistorySheet(ss);
-    const historyData = historySheet.getDataRange().getValues();
+    const historyData = historySheet.getDataRange().getDisplayValues(); // Usa display values para não perder zeros à esquerda
     
     // Filtra exercícios concluídos hoje para este CPF
     const completedToday = new Set();
     for (let i = 1; i < historyData.length; i++) {
         const row = historyData[i];
         // Col 0: Data/Hora, Col 1: CPF, Col 2: Exercicio, Col 3: Treino, Col 4: Status
-        const rowDate = getNormalizedDate(row[0] instanceof Date ? row[0] : new Date(row[0]), ss);
+        const rowDateDisplay = row[0].split(' ')[0]; // Pega apenas a parte da data (dd/MM/yyyy)
         const rowCpf = String(row[1]).trim();
         const rowEx = String(row[2]).trim().toUpperCase();
         const rowStatus = String(row[4]).trim().toUpperCase();
 
-        if (rowDate === todayStr && rowCpf === cpf && rowStatus === "SIM") {
+        if (rowDateDisplay === todayStr && rowCpf === cpf && rowStatus === "SIM") {
             completedToday.add(rowEx);
         }
     }
@@ -120,7 +120,7 @@ function doPost(e) {
       if (item.concluido) {
         historySheet.appendRow([
           timestamp,
-          cpf,
+          "'" + cpf, // Força como string para manter zeros à esquerda
           item.nome || item.exercicio,
           item.tipo || "N/A",
           "SIM"
@@ -144,6 +144,10 @@ function getOrCreateHistorySheet(ss) {
     sheet = ss.insertSheet("HISTORICO");
     sheet.appendRow(["DATA/HORA", "CPF", "EXERCICIO", "TREINO", "STATUS"]);
     sheet.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#f3f3f3");
+    
+    // Formata a coluna B (CPF) como Texto Simples para evitar perda de zeros
+    sheet.getRange("B:B").setNumberFormat("@");
+    
     sheet.setFrozenRows(1);
   }
   return sheet;

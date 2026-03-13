@@ -33,19 +33,11 @@ function doGet(e) {
     // Identifica ou cria a coluna de hoje
     const todayStr = getNormalizedDate(new Date(), ss);
     let dateColIndex = -1;
-    const headerRow = data[0];
+    const headerRowDisplay = sheet.getRange(1, 1, 1, sheet.getLastColumn() || 1).getDisplayValues()[0];
 
     // Procura a data de hoje a partir da Coluna E (índice 4)
-    for (let i = 4; i < headerRow.length; i++) {
-       const cellValue = headerRow[i];
-       let colDateStr = "";
-       
-       if (cellValue instanceof Date) {
-         colDateStr = getNormalizedDate(cellValue, ss);
-       } else {
-         colDateStr = String(cellValue).trim();
-       }
-
+    for (let i = 4; i < headerRowDisplay.length; i++) {
+       const colDateStr = headerRowDisplay[i].trim();
        if (colDateStr === todayStr) {
          dateColIndex = i;
          break;
@@ -54,9 +46,9 @@ function doGet(e) {
 
     // Se não encontrou a data de hoje, adiciona uma nova coluna
     if (dateColIndex === -1) {
-      dateColIndex = headerRow.length;
+      dateColIndex = headerRowDisplay.length;
+      if (dateColIndex < 4) dateColIndex = 4; // Garante que comece no mínimo em E
       sheet.getRange(1, dateColIndex + 1).setValue(todayStr); // Salva como string dd/MM/yyyy
-      headerRow[dateColIndex] = todayStr;
     }
 
     // Organiza os treinos por Tipo (A, B, C, D, E...)
@@ -129,22 +121,14 @@ function doPost(e) {
     }
 
     const data = sheet.getDataRange().getValues();
-    const headerRow = data[0];
+    const headerRowDisplay = sheet.getRange(1, 1, 1, sheet.getLastColumn() || 1).getDisplayValues()[0];
     const todayStr = getNormalizedDate(new Date(), ss);
     const targetDateStr = payload.data || todayStr;
 
     // 1. Achar a Coluna da Data (Iniciando na Coluna E/índice 4)
     let dateColIndex = -1;
-    for (let i = 4; i < headerRow.length; i++) {
-       const cellValue = headerRow[i];
-       let colDateStr = "";
-       
-       if (cellValue instanceof Date) {
-         colDateStr = getNormalizedDate(cellValue, ss);
-       } else {
-         colDateStr = String(cellValue).trim();
-       }
-
+    for (let i = 4; i < headerRowDisplay.length; i++) {
+       const colDateStr = headerRowDisplay[i].trim();
        if (colDateStr === targetDateStr) {
          dateColIndex = i;
          break;
@@ -152,7 +136,8 @@ function doPost(e) {
     }
 
     if (dateColIndex === -1) {
-       dateColIndex = headerRow.length;
+       dateColIndex = headerRowDisplay.length;
+       if (dateColIndex < 4) dateColIndex = 4;
        sheet.getRange(1, dateColIndex + 1).setValue(targetDateStr);
     }
 
@@ -161,13 +146,17 @@ function doPost(e) {
       sheet.getRange(2, dateColIndex + 1, data.length - 1, 1).clearContent();
     }
 
-    // 3. Processar cada exercício: marcar 'Sim' somente nos concluídos
-    const exerciseNamesInSheet = data.map(row => String(row[0]).trim().toUpperCase());
+    // 3. Processar cada exercício: buscar por Nome (Col A) e Tipo (Col C)
+    // Cria chaves "NOME|TIPO" para todas as linhas
+    const rowKeys = data.map(row => `${String(row[0]).trim().toUpperCase()}|${String(row[2]).trim().toUpperCase()}`);
     
     exerciciosParaAtualizar.forEach(item => {
       if (item.concluido) {
-        const targetName = String(item.nome).trim().toUpperCase();
-        const exerciseRowIndex = exerciseNamesInSheet.indexOf(targetName);
+        const targetName = String(item.nome || item.exercicio).trim().toUpperCase();
+        const targetType = String(item.tipo).trim().toUpperCase();
+        const targetKey = `${targetName}|${targetType}`;
+        
+        const exerciseRowIndex = rowKeys.indexOf(targetKey);
         if (exerciseRowIndex !== -1) {
           sheet.getRange(exerciseRowIndex + 1, dateColIndex + 1).setValue("Sim");
         }

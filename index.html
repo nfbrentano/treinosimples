@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <title>Elite Fitness - Login</title>
     <!-- Tailwind CSS v3 CDN with Forms and Container-Queries -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
-          theme: {
-            extend: {
-              colors: {
-                fitness: {
-                  primary: '#CCFF00', // Neon Volt color for high energy
-                  dark: '#0A0A0A',
-                  accent: '#1F1F1F'
+            theme: {
+                extend: {
+                    colors: {
+                        fitness: {
+                            primary: '#CCFF00', // Neon Volt color for high energy
+                            dark: '#0A0A0A',
+                            accent: '#1F1F1F'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
                 }
-              },
-              fontFamily: {
-                sans: ['Inter', 'system-ui', 'sans-serif'],
-              }
             }
-          }
         }
     </script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&amp;display=swap" rel="stylesheet" />
     <style>
         .bg-image-overlay {
             background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.85)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuDnB-w-stwDlVHLW6lORVizsGA0aj1iYyiSjOi3VgB9tdTMby3xggQW-K12FuKR9U1Omdwwyf1Gt0J_6jckqYmDVJ0ifYAQOSW3cqiZy_OnoUyNLVQAlJ9PKnIWTCg4fbgvBfkspXfAD9Mkvhwtmjx2f-gkB3C0iICNpfb76bsoyRc4SRDiAuX3edT-Llq0bo8vuoJvi0AnCvUiuF6j-6QXpHDj_BzKB14xWKDYv5c5KrtVsW1uo9MyuYNiwCo9ZXPQquOEdUPIWhtw);
             background-size: cover;
             background-position: center;
         }
+
         .input-focus-effect:focus {
             box-shadow: 0 0 0 2px #CCFF00;
         }
+
         .loading-spinner {
             border: 3px solid rgba(255, 255, 255, 0.1);
             border-top: 3px solid #CCFF00;
@@ -45,27 +48,37 @@
             animation: spin 1s linear infinite;
             display: none;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body class="bg-fitness-dark font-sans antialiased text-white">
     <!-- MainContainer -->
-    <main class="relative h-screen w-full flex flex-col justify-center items-center px-6 overflow-hidden bg-image-overlay">
-        
+    <main
+        class="relative h-screen w-full flex flex-col justify-center items-center px-6 overflow-hidden bg-image-overlay">
+
         <!-- HeaderSection -->
         <header class="w-full flex flex-col items-center mb-12">
             <div class="mb-6">
-                <svg class="w-20 h-20 text-fitness-primary" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-20 h-20 text-fitness-primary" fill="none" stroke="currentColor" stroke-width="2.5"
+                    viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
             </div>
             <h1 class="text-3xl font-extrabold tracking-tight text-center uppercase">
                 Forge Your <span class="text-fitness-primary">Limits</span>
             </h1>
-            <p class="mt-2 text-gray-400 text-sm font-medium tracking-widest uppercase text-center">Portal de Treinamento Elite</p>
+            <p class="mt-2 text-gray-400 text-sm font-medium tracking-widest uppercase text-center">Portal de
+                Treinamento do Gui Gaspar</p>
         </header>
 
         <!-- LoginForm -->
@@ -76,16 +89,20 @@
                         Digite seu CPF
                     </label>
                     <div class="relative">
-                        <input class="w-full h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 text-white placeholder-gray-500 input-focus-effect transition-all duration-300 outline-none" 
-                               id="cpf" maxlength="14" name="cpf" placeholder="000.000.000-00" required="" type="text" autocomplete="off"/>
+                        <input
+                            class="w-full h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 text-white placeholder-gray-500 input-focus-effect transition-all duration-300 outline-none"
+                            id="cpf" maxlength="14" name="cpf" placeholder="000.000.000-00" required="" type="text"
+                            autocomplete="off" />
                     </div>
                 </div>
 
                 <!-- Error Message -->
-                <p id="error-msg" class="text-red-500 text-xs text-center hidden font-medium uppercase tracking-wide"></p>
+                <p id="error-msg" class="text-red-500 text-xs text-center hidden font-medium uppercase tracking-wide">
+                </p>
 
                 <!-- Primary Action Button -->
-                <button type="submit" id="btn-access" class="w-full h-14 bg-fitness-primary hover:bg-opacity-90 active:scale-95 text-black font-extrabold text-lg uppercase tracking-wide rounded-xl shadow-lg shadow-fitness-primary/20 transition-all duration-200 flex items-center justify-center">
+                <button type="submit" id="btn-access"
+                    class="w-full h-14 bg-fitness-primary hover:bg-opacity-90 active:scale-95 text-black font-extrabold text-lg uppercase tracking-wide rounded-xl shadow-lg shadow-fitness-primary/20 transition-all duration-200 flex items-center justify-center">
                     <span id="btn-text">Acessar Treinos</span>
                     <div id="loading" class="loading-spinner ml-2"></div>
                 </button>
@@ -94,11 +111,12 @@
 
         <!-- FooterLinks -->
         <footer class="absolute bottom-10 w-full px-6 flex flex-col items-center space-y-4">
-            <a class="text-gray-400 text-sm hover:text-white transition-colors duration-200 underline underline-offset-4" href="#">
+            <a class="text-gray-400 text-sm hover:text-white transition-colors duration-200 underline underline-offset-4"
+                href="#">
                 Esqueceu seus dados?
             </a>
             <p class="text-xs text-gray-500 uppercase tracking-tighter">
-                © 2026 Elite Fitness System
+                © 2026 NFGB Fitness System
             </p>
         </footer>
     </main>
@@ -117,24 +135,24 @@
         const btnAccess = document.getElementById('btn-access');
 
         // Máscara de CPF
-        cpfInput.addEventListener('input', function(e) {
+        cpfInput.addEventListener('input', function (e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length > 11) value = value.slice(0, 11);
-            
+
             let formattedValue = '';
             if (value.length > 0) formattedValue += value.slice(0, 3);
             if (value.length > 3) formattedValue += '.' + value.slice(3, 6);
             if (value.length > 6) formattedValue += '.' + value.slice(6, 9);
             if (value.length > 9) formattedValue += '-' + value.slice(9, 11);
-            
+
             e.target.value = formattedValue;
             errorMsg.classList.add('hidden');
         });
 
         // Lógica de Login
-        loginForm.addEventListener('submit', async function(e) {
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const rawCpf = cpfInput.value.replace(/\D/g, '');
             if (rawCpf.length !== 11) {
                 showError('CPF incompleto');
@@ -187,4 +205,5 @@
         }
     </script>
 </body>
+
 </html>

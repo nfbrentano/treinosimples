@@ -13,16 +13,19 @@
  */
 function doGet(e) {
   try {
-    const cpf = e.parameter.cpf;
+    let cpf = e.parameter.cpf;
     if (!cpf) {
       return jsonResponse({ error: "Parâmetro 'cpf' é obrigatório." }, 400);
     }
+    
+    // Normaliza o CPF para string de 11 dígitos (reconstrói zeros à esquerda se necessário)
+    cpf = normalizeCpf(cpf);
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(cpf);
 
     if (!sheet) {
-      return jsonResponse({ error: "Acesso indevido (CPF não cadastrado)." }, 404);
+      return jsonResponse({ error: "Acesso indevido (CPF " + cpf + " não cadastrado)." }, 404);
     }
 
     const data = sheet.getDataRange().getValues();
@@ -33,6 +36,10 @@ function doGet(e) {
     // Identifica o histórico de hoje
     const todayStr = getNormalizedDate(new Date(), ss);
     const historySheet = getOrCreateHistorySheet(ss);
+    
+    // Garante que a coluna de CPF no historico seja texto
+    historySheet.getRange("B:B").setNumberFormat("@");
+    
     const historyData = historySheet.getDataRange().getDisplayValues(); // Usa display values para não perder zeros à esquerda
     
     // Filtra exercícios concluídos hoje para este CPF
@@ -40,8 +47,8 @@ function doGet(e) {
     for (let i = 1; i < historyData.length; i++) {
         const row = historyData[i];
         // Col 0: Data/Hora, Col 1: CPF, Col 2: Exercicio, Col 3: Treino, Col 4: Status
-        const rowDateDisplay = row[0].split(' ')[0]; // Pega apenas a parte da data (dd/MM/yyyy)
-        const rowCpf = String(row[1]).trim();
+        const rowDateDisplay = String(row[0]).split(' ')[0]; // Pega apenas a parte da data (dd/MM/yyyy)
+        const rowCpf = normalizeCpf(row[1]);
         const rowEx = String(row[2]).trim().toUpperCase();
         const rowStatus = String(row[4]).trim().toUpperCase();
 
@@ -92,7 +99,7 @@ function doGet(e) {
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
-    const cpf = payload.cpf;
+    const cpf = normalizeCpf(payload.cpf);
     
     // Lista de exercícios para atualizar
     let exerciciosParaAtualizar = [];
@@ -112,15 +119,21 @@ function doPost(e) {
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const historySheet = getOrCreateHistorySheet(ss);
+    
+    // Enforce Plain Text every time to be ultra-safe
+    historySheet.getRange("B:B").setNumberFormat("@");
+    
     const now = new Date();
     const timestamp = Utilities.formatDate(now, ss.getSpreadsheetTimeZone(), "dd/MM/yyyy HH:mm:ss");
 
     // Adiciona cada exercício concluído ao histórico
     exerciciosParaAtualizar.forEach(item => {
       if (item.concluido) {
+        // Usa appendRow mas garante que os valores sejam tratados como strings
+        // O prefixo ' força o Sheets a manter como texto
         historySheet.appendRow([
           timestamp,
-          "'" + cpf, // Força como string para manter zeros à esquerda
+          "'" + cpf, 
           item.nome || item.exercicio,
           item.tipo || "N/A",
           "SIM"
@@ -136,6 +149,17 @@ function doPost(e) {
 }
 
 /**
+ * Helper: Normaliza o CPF para sempre ter 11 dígitos (string).
+ */
+function normalizeCpf(cpf) {
+  let s = String(cpf).replace(/\D/g, '');
+  while (s.length < 11 && s.length > 0) {
+    s = '0' + s;
+  }
+  return s;
+}
+
+/**
  * Helper: Garante que a aba HISTORICO existe com o cabeçalho correto.
  */
 function getOrCreateHistorySheet(ss) {
@@ -145,7 +169,7 @@ function getOrCreateHistorySheet(ss) {
     sheet.appendRow(["DATA/HORA", "CPF", "EXERCICIO", "TREINO", "STATUS"]);
     sheet.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#f3f3f3");
     
-    // Formata a coluna B (CPF) como Texto Simples para evitar perda de zeros
+    // Formata a coluna B (CPF) como Texto Simples
     sheet.getRange("B:B").setNumberFormat("@");
     
     sheet.setFrozenRows(1);

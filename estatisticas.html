@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Minhas Estatísticas - Fitness App</title>
+    <title>Estatísticas - Fitness App</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -21,7 +21,6 @@
                     fontFamily: {
                         "display": ["Public Sans"]
                     },
-                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
                 },
             },
         }
@@ -29,109 +28,139 @@
     <style>
         body { min-height: 100dvh; }
         .bg-primary-glow { background: radial-gradient(circle at center, rgba(236, 91, 19, 0.15) 0%, transparent 70%); }
+        /* Custom scrollbar for better look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #221610; }
+        ::-webkit-scrollbar-thumb { background: #ec5b13; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
     
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 z-50 bg-background-dark/80 backdrop-blur-sm flex flex-col items-center justify-center">
+    <div id="loading-overlay" class="fixed inset-0 z-50 bg-background-dark/90 backdrop-blur-md flex flex-col items-center justify-center">
         <div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-        <p class="mt-4 text-primary font-bold uppercase tracking-widest text-sm">Carregando dados...</p>
+        <p class="mt-4 text-primary font-bold uppercase tracking-widest text-sm italic">Carregando dados...</p>
     </div>
 
     <!-- Header -->
-    <header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
-        <div class="flex items-center p-4 justify-between max-w-md mx-auto w-full">
-            <button onclick="window.location.href='treinos.html'" class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10">
+    <header class="sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+        <div class="max-w-6xl mx-auto px-4 w-full h-16 flex items-center justify-between">
+            <button onclick="window.location.href='treinos.html'" class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
                 <span class="material-symbols-outlined">arrow_back</span>
             </button>
-            <h1 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center font-display uppercase italic text-primary">Estatísticas</h1>
+            <h1 class="text-xl font-bold tracking-tight font-display uppercase italic text-primary">Minhas Estatísticas</h1>
             <div class="size-10"></div>
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto pb-32 max-w-md mx-auto w-full">
-        <!-- Monthly Habit Calendar Section -->
-        <section class="p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold tracking-tight uppercase italic">Calendário de Hábitos</h2>
-                <span id="label-month" class="text-sm font-medium text-slate-500 dark:text-slate-400">---</span>
-            </div>
-            <div class="bg-primary/5 dark:bg-primary/10 p-6 rounded-2xl border border-primary/10 relative overflow-hidden">
-                <div class="bg-primary-glow absolute inset-0 pointer-events-none"></div>
-                <!-- Habit Grid -->
-                <div id="habit-grid" class="grid grid-cols-7 gap-2 relative z-10">
-                    <!-- Weekday Labels -->
-                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">D</div>
-                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">S</div>
-                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">T</div>
-                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">Q</div>
-                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">Q</div>
-                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">S</div>
-                    <div class="text-[10px] text-center font-black text-slate-500 uppercase">S</div>
-                    <!-- Days will be injected here -->
-                </div>
-                <div class="mt-6 flex items-center justify-center gap-6 text-[10px] font-bold uppercase tracking-widest relative z-10">
-                    <div class="flex items-center gap-2">
-                        <div class="size-3 rounded-sm bg-slate-200 dark:bg-slate-800"></div>
-                        <span class="text-slate-500">Sem treino</span>
+    <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-8 pb-32">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Calendar & Motivation (Spans 2 on LG) -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Habit Calendar Section -->
+                <section>
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-black tracking-tight uppercase italic underline decoration-primary decoration-4 underline-offset-8">Calendário de Hábitos</h2>
+                        <span id="label-month" class="text-sm font-bold text-slate-500 dark:text-slate-400 bg-primary/5 px-4 py-1 rounded-full border border-primary/10">---</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <div class="size-3 rounded-sm bg-accent shadow-[0_0_8px_rgba(11,218,135,0.4)]"></div>
-                        <span class="text-accent">Treinado</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+                    <div class="bg-primary/5 dark:bg-primary/10 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden shadow-2xl">
+                        <div class="bg-primary-glow absolute inset-0 pointer-events-none"></div>
+                        
+                        <!-- Habit Grid -->
+                        <div id="habit-grid" class="grid grid-cols-7 gap-3 relative z-10 sm:max-w-lg mx-auto">
+                            <!-- Weekday Labels -->
+                            <div class="text-xs text-center font-black text-primary/40 uppercase">D</div>
+                            <div class="text-xs text-center font-black text-primary/40 uppercase">S</div>
+                            <div class="text-xs text-center font-black text-primary/40 uppercase">T</div>
+                            <div class="text-xs text-center font-black text-primary/40 uppercase">Q</div>
+                            <div class="text-xs text-center font-black text-primary/40 uppercase">Q</div>
+                            <div class="text-xs text-center font-black text-primary/40 uppercase">S</div>
+                            <div class="text-xs text-center font-black text-primary/40 uppercase">S</div>
+                        </div>
 
-        <!-- Stats Section -->
-        <section class="px-6 pb-8 space-y-4">
-            <div class="flex gap-4">
-                <div class="flex flex-1 flex-col gap-3 rounded-2xl p-5 bg-primary/10 border border-primary/20">
-                    <div class="flex items-center justify-between">
-                        <span class="material-symbols-outlined text-primary text-3xl">local_fire_department</span>
+                        <div class="mt-8 flex items-center justify-center gap-8 text-xs font-black uppercase tracking-[0.2em] relative z-10">
+                            <div class="flex items-center gap-2">
+                                <div class="size-4 rounded-md bg-slate-200 dark:bg-slate-800 border border-white/5"></div>
+                                <span class="text-slate-500">Sem treino</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="size-4 rounded-md bg-accent shadow-[0_0_12px_rgba(11,218,135,0.4)]"></div>
+                                <span class="text-accent">Treinado</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">Ofensiva Atual</p>
-                        <p id="stat-streak" class="text-2xl font-black tracking-tight"><span class="animate-pulse">--</span> Dias</p>
+                </section>
+
+                <!-- Motivational Banner (On Web it sits below the calendar) -->
+                <section class="hidden lg:block">
+                    <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary to-primary/60 p-10 text-white shadow-2xl shadow-primary/20">
+                        <div class="relative z-10 max-w-lg">
+                            <h3 id="banner-title-web" class="text-3xl font-black mb-4 italic uppercase leading-none">Você está no caminho!</h3>
+                            <p id="banner-msg-web" class="text-lg font-medium leading-relaxed opacity-95">Sua consistência é o que define seus resultados. Vamos bater essa meta semanal!</p>
+                        </div>
+                        <span class="material-symbols-outlined absolute -right-8 -bottom-8 text-[12rem] opacity-20 rotate-12">trending_up</span>
                     </div>
-                </div>
-                <div class="flex flex-1 flex-col gap-3 rounded-2xl p-5 bg-primary/10 border border-primary/20">
-                    <div class="flex items-center justify-between">
-                        <span class="material-symbols-outlined text-primary text-3xl">fitness_center</span>
-                    </div>
-                    <div>
-                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">No Mês</p>
-                        <p id="stat-monthly" class="text-2xl font-black tracking-tight"><span class="animate-pulse">--</span> Treinos</p>
-                    </div>
-                </div>
+                </section>
             </div>
 
-            <!-- Motivational Banner -->
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/60 p-6 text-white shadow-xl shadow-primary/10">
-                <div class="relative z-10">
-                    <h3 id="banner-title" class="text-lg font-black mb-1 italic uppercase underline decoration-accent underline-offset-4">Mantenha o ritmo!</h3>
-                    <p id="banner-msg" class="text-sm font-medium leading-relaxed opacity-90">Carregando sua meta pessoal...</p>
+            <!-- Right Column: Stats & Motivation (On Mobile sits below) -->
+            <div class="space-y-6">
+                <h2 class="text-2xl font-black tracking-tight uppercase italic lg:hidden">Resumo e Meta</h2>
+                
+                <!-- Streak Card -->
+                <div class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
+                    <div class="flex items-center justify-between">
+                        <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary text-4xl fill-[1]">local_fire_department</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">Ofensiva Atual</p>
+                        <p id="stat-streak" class="text-4xl font-black tracking-tighter text-white"><span class="animate-pulse">--</span> Dias</p>
+                    </div>
                 </div>
-                <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl opacity-20 rotate-12 scale-150">trending_up</span>
+
+                <!-- Monthly Total Card -->
+                <div class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
+                    <div class="flex items-center justify-between">
+                        <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary text-4xl">fitness_center</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">Treinos no Mês</p>
+                        <p id="stat-monthly" class="text-4xl font-black tracking-tighter text-white"><span class="animate-pulse">--</span> Sessões</p>
+                    </div>
+                </div>
+
+                <!-- Motivational Banner (Mobile Only) -->
+                <div class="lg:hidden relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary to-primary/60 p-8 text-white shadow-xl">
+                    <div class="relative z-10">
+                        <h3 id="banner-title-mobile" class="text-xl font-black mb-2 italic uppercase">Foco no Objetivo!</h3>
+                        <p id="banner-msg-mobile" class="text-sm font-medium leading-relaxed opacity-90">Carregando sua meta...</p>
+                    </div>
+                    <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl opacity-20 rotate-12">trending_up</span>
+                </div>
             </div>
-        </section>
+
+        </div>
     </main>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 z-20 border-t border-primary/10 bg-background-light dark:bg-background-dark px-4 pb-6 pt-2">
-        <div class="flex items-center justify-around max-w-md mx-auto">
-            <a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-all duration-200" href="treinos.html">
-                <span class="material-symbols-outlined text-[28px]">pool</span>
-                <p class="text-[10px] font-bold uppercase">Treino</p>
+    <!-- Bottom Navigation Bar (Responsive) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-primary/10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-xl px-4 pb-8 pt-4">
+        <div class="max-w-2xl mx-auto flex items-center justify-around">
+            <a class="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-primary transition-all duration-300 group" href="treinos.html">
+                <span class="material-symbols-outlined text-3xl group-hover:scale-110 group-active:scale-95 transition-transform">pool</span>
+                <p class="text-[10px] font-black uppercase tracking-widest">Treino</p>
             </a>
-            <a class="flex flex-col items-center gap-1 text-primary scale-110" href="estatisticas.html">
-                <span class="material-symbols-outlined text-[28px] fill-[1]">bar_chart</span>
-                <p class="text-[10px] font-black uppercase">Estatísticas</p>
+            <a class="flex flex-col items-center gap-2 text-primary scale-110" href="estatisticas.html">
+                <span class="material-symbols-outlined text-3xl fill-[1]">bar_chart</span>
+                <p class="text-[10px] font-black uppercase tracking-widest">Estatísticas</p>
             </a>
-            <a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-all duration-200" href="#" onclick="logout()">
-                <span class="material-symbols-outlined text-[28px]">person</span>
-                <p class="text-[10px] font-bold uppercase">Sair</p>
+            <a class="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-primary transition-all duration-300 group" href="#" onclick="logout()">
+                <span class="material-symbols-outlined text-3xl group-hover:scale-110 group-active:scale-95 transition-transform">logout</span>
+                <p class="text-[10px] font-black uppercase tracking-widest">Sair</p>
             </a>
         </div>
     </nav>
@@ -166,22 +195,25 @@
         }
 
         function updateUI(data) {
-            // Stats principais
             document.getElementById('stat-streak').innerText = `${data.streak} Dias`;
-            document.getElementById('stat-monthly').innerText = `${data.monthlyTotal} Treinos`;
+            document.getElementById('stat-monthly').innerText = `${data.monthlyTotal} Sessões`;
             document.getElementById('label-month').innerText = `${data.monthName} ${new Date().getFullYear()}`;
 
-            // Banner motivacional
-            const remaining = data.weeklyGoal - (data.monthlyTotal % data.weeklyGoal || data.weeklyGoal); 
-            // Mock logic for banner: assumes goal is weekly, but we show distance to monthly equivalent or just standard msg
-            if (data.monthlyTotal >= 15) {
-                document.getElementById('banner-title').innerText = "Nível Elite!";
-                document.getElementById('banner-msg').innerText = `Você já treinou ${data.monthlyTotal} vezes este mês. Excelente consistência!`;
-            } else {
-                document.getElementById('banner-msg').innerText = `Você já realizou ${data.monthlyTotal} treinos este mês. Sua meta semanal é de ${data.weeklyGoal} treinos. Continue firme!`;
+            const msg = data.monthlyTotal >= 12 
+                ? `Você já realizou ${data.monthlyTotal} treinos este mês. Nível Elite! Sua meta é de ${data.weeklyGoal}x por semana.`
+                : `Você já realizou ${data.monthlyTotal} treinos este mês. Faltam poucos para bater sua meta semanal de ${data.weeklyGoal} treinos!`;
+            
+            const title = data.monthlyTotal >= 12 ? "ESTADO DE ELITE" : "MANTENHA O RITMO";
+
+            if (document.getElementById('banner-msg-web')) {
+                document.getElementById('banner-msg-web').innerText = msg;
+                document.getElementById('banner-title-web').innerText = title;
+            }
+            if (document.getElementById('banner-msg-mobile')) {
+                document.getElementById('banner-msg-mobile').innerText = msg;
+                document.getElementById('banner-title-mobile').innerText = title;
             }
 
-            // Calendário
             renderCalendar(data.calendarData);
         }
 
@@ -190,36 +222,31 @@
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
-            
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Adiciona espaços vazios para o início do mês
             for (let i = 0; i < firstDay; i++) {
-                const empty = document.createElement('div');
-                empty.className = "aspect-square rounded-sm bg-transparent";
-                grid.appendChild(empty);
+                grid.appendChild(createDot(false, false));
             }
 
-            // Adiciona os dias do mês
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${String(day).padStart(2, '0')}/${String(month+1).padStart(2, '0')}/${year}`;
                 const hasTrained = trainedDays.includes(dateStr);
-                
-                const dot = document.createElement('div');
-                dot.className = `aspect-square rounded-sm transition-all duration-500 ${
-                    hasTrained 
-                    ? 'bg-accent shadow-[0_0_8px_rgba(11,218,135,0.4)]' 
-                    : 'bg-slate-200 dark:bg-slate-800'
-                }`;
-                
-                // Realce do dia atual
-                if (day === now.getDate()) {
-                    dot.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background-dark');
-                }
-
-                grid.appendChild(dot);
+                grid.appendChild(createDot(hasTrained, day === now.getDate()));
             }
+        }
+
+        function createDot(active, isToday) {
+            const dot = document.createElement('div');
+            dot.className = `aspect-square rounded-md transition-all duration-700 ${
+                active 
+                ? 'bg-accent shadow-[0_0_12px_rgba(11,218,135,0.4)] border border-accent/20' 
+                : 'bg-slate-200 dark:bg-slate-800 border border-white/5'
+            }`;
+            if (isToday) {
+                dot.classList.add('ring-2', 'ring-primary', 'ring-offset-4', 'ring-offset-background-dark', 'scale-110');
+            }
+            return dot;
         }
 
         function logout() {

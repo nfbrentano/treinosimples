@@ -115,17 +115,18 @@ function getStudentStats(cpf, ss, sheet) {
     
     if (String(row[4]).trim().toUpperCase() === "SIM") {
       trainedDays.add(rowDateStr);
-      
-      // Conta treinos no mês atual
-      const parts = rowDateStr.split('/');
-      const d = parseInt(parts[0]);
-      const m = parseInt(parts[1]) - 1;
-      const y = parseInt(parts[2]);
-      if (m === currentMonth && y === currentYear) {
-        monthlyTotal++;
-      }
     }
   }
+
+  // Conta dias únicos no mês atual
+  trainedDays.forEach(dateStr => {
+    const parts = dateStr.split('/');
+    const m = parseInt(parts[1]) - 1;
+    const y = parseInt(parts[2]);
+    if (m === currentMonth && y === currentYear) {
+      monthlyTotal++;
+    }
+  });
 
   // Cálculo da Ofensiva (Streak)
   let streak = 0;

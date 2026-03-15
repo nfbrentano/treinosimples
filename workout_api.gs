@@ -146,12 +146,12 @@ function getStudentStats(cpf, ss, sheet) {
   const calendarData = [];
   let weeklyTotal = 0;
   
-  // Calcula o início da semana atual (Segunda-feira)
-  const monday = new Date(now);
-  const dayOfWeek = monday.getDay(); // 0 (Dom) a 6 (Sab)
-  const diff = monday.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1); // Ajusta para Segunda
-  monday.setDate(diff);
-  monday.setHours(0, 0, 0, 0);
+  // Calcula o início da semana atual (Domingo)
+  const sunday = new Date(now);
+  const dayOfWeek = sunday.getDay(); // 0 (Dom) a 6 (Sab)
+  const diff = sunday.getDate() - dayOfWeek; // Ajusta para Domingo
+  sunday.setDate(diff);
+  sunday.setHours(0, 0, 0, 0);
 
   uniqueTrainedDates.forEach(dateKey => {
     const parts = dateKey.split('-');
@@ -165,8 +165,8 @@ function getStudentStats(cpf, ss, sheet) {
       monthlyTotal++;
     }
 
-    // Treinos na semana atual (Segunda a Domingo)
-    if (d >= monday) {
+    // Treinos na semana atual (Domingo a Sábado)
+    if (d >= sunday) {
       weeklyTotal++;
     }
   });

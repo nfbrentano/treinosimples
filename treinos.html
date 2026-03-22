@@ -43,13 +43,8 @@
         rel="stylesheet" />
     <style>
         body {
-            background-color: #0A0A0A;
+            transition: background-color 0.3s ease, color 0.3s ease;
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s ease;
-        }
-
-        .light body {
-            background-color: #f3f4f6;
         }
 
         .custom-checkbox:checked+label {
@@ -94,7 +89,7 @@
     </style>
 </head>
 
-<body class="text-white font-sans antialiased min-h-screen pb-32">
+<body class="bg-gray-100 dark:bg-brand-dark text-black dark:text-white font-sans antialiased min-h-screen pb-32 transition-colors duration-300">
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center">
         <div class="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin"></div>
@@ -141,7 +136,7 @@
                 <h2 class="text-xs font-black uppercase tracking-[0.2em] text-gray-500">Categorias de Treino</h2>
             </div>
             <div id="workout-tabs"
-                class="flex gap-2 p-1.5 bg-brand-accent rounded-2xl mb-12 overflow-x-auto no-scrollbar">
+                class="flex gap-2 p-1.5 bg-brand-accent/5 dark:bg-brand-accent rounded-2xl mb-12 overflow-x-auto no-scrollbar border border-black/5 dark:border-white/5">
                 <!-- Tabs injected dynamically -->
             </div>
         </div>
@@ -301,16 +296,16 @@
 
             data.forEach((ex, index) => {
                 const card = document.createElement('article');
-                card.className = "group bg-brand-surface light:bg-white rounded-[2rem] overflow-hidden shadow-2xl border border-white/5 light:border-black/5 transition-all duration-300 hover:border-brand-primary/30 hover:translate-y-[-4px]";
+                card.className = "group bg-white dark:bg-brand-surface rounded-[2rem] overflow-hidden shadow-2xl border border-black/5 dark:border-white/5 transition-all duration-300 hover:border-brand-primary/30 hover:translate-y-[-4px]";
                 card.innerHTML = `
                     <div class="p-8 pb-6">
                         <div class="flex justify-between items-start mb-2">
-                            <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white light:text-black leading-tight">${ex.exercicio}</h2>
+                            <h2 class="text-2xl font-black italic uppercase tracking-tighter text-black dark:text-white leading-tight">${ex.exercicio}</h2>
                             <span class="text-[10px] font-black bg-brand-primary/10 text-brand-primary px-3 py-1 rounded-full uppercase tracking-widest border border-brand-primary/20">${currentTab}</span>
                         </div>
                         <div class="flex items-center justify-between mt-2">
                             <p class="text-brand-primary/60 text-[10px] font-black uppercase tracking-[0.2em]">Técnica e Execução</p>
-                            <div class="flex items-center gap-2 bg-white/5 light:bg-black/5 px-3 py-1.5 rounded-xl border border-white/10 light:border-black/10">
+                            <div class="flex items-center gap-2 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-black/10 dark:border-white/10">
                                 <span class="text-[10px] font-black uppercase text-gray-500">Peso:</span>
                                 <input type="text" value="${ex.peso || ''}" 
                                     onchange="updateWeight('${ex.exercicio}', this.value, '${currentTab}', ${index})"
@@ -434,7 +429,8 @@
         const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
 
         function updateThemeIcons() {
-            if (document.documentElement.classList.contains('dark')) {
+            const isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
                 themeToggleLightIcon.classList.remove('hidden');
                 themeToggleDarkIcon.classList.add('hidden');
             } else {

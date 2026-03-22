@@ -8,7 +8,8 @@
     <!-- Tailwind CSS v3 CDN with Forms and Container-Queries -->
     <!-- Dark Mode initialization -->
     <script>
-        if (localStorage.getItem('theme') === 'light') {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light') {
             document.documentElement.classList.remove('dark');
         } else {
             document.documentElement.classList.add('dark');
@@ -74,7 +75,7 @@
     </style>
 </head>
 
-<body class="bg-fitness-dark light:bg-gray-100 font-sans antialiased text-white light:text-black transition-colors duration-300">
+<body class="bg-gray-100 dark:bg-fitness-dark font-sans antialiased text-black dark:text-white transition-colors duration-300">
     <!-- Theme Toggle -->
     <div class="absolute top-6 right-6 z-50">
         <button id="theme-toggle" class="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all">
@@ -105,12 +106,12 @@
         <section class="w-full max-w-sm">
             <form id="login-form" class="space-y-6">
                 <div class="space-y-2">
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 light:text-gray-500 ml-1" for="cpf">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300 ml-1" for="cpf">
                         Digite seu CPF
                     </label>
                     <div class="relative">
                         <input
-                            class="w-full h-14 bg-white/10 light:bg-black/5 backdrop-blur-md border border-white/20 light:border-black/10 rounded-xl px-4 text-white light:text-black placeholder-gray-500 input-focus-effect transition-all duration-300 outline-none"
+                            class="w-full h-14 bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/20 rounded-xl px-4 text-black dark:text-white placeholder-gray-500 input-focus-effect transition-all duration-300 outline-none"
                             id="cpf" maxlength="14" name="cpf" placeholder="000.000.000-00" required="" type="text"
                             autocomplete="off" />
                     </div>
@@ -119,8 +120,8 @@
                 <!-- Remember Me Checkbox -->
                 <div class="flex items-center space-x-3 ml-1">
                     <input type="checkbox" id="save-cpf" name="save-cpf" 
-                        class="w-5 h-5 rounded border-white/20 light:border-black/20 bg-white/10 light:bg-black/5 text-fitness-primary focus:ring-fitness-primary transition-all duration-200 cursor-pointer">
-                    <label for="save-cpf" class="text-xs font-semibold uppercase tracking-wider text-gray-300 light:text-gray-500 cursor-pointer select-none">
+                        class="w-5 h-5 rounded border-black/20 dark:border-white/20 bg-black/5 dark:bg-white/10 text-fitness-primary focus:ring-fitness-primary transition-all duration-200 cursor-pointer">
+                    <label for="save-cpf" class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300 cursor-pointer select-none">
                         Salvar CPF neste dispositivo
                     </label>
                 </div>
@@ -286,7 +287,8 @@
         const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
 
         function updateThemeIcons() {
-            if (document.documentElement.classList.contains('dark')) {
+            const isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
                 themeToggleLightIcon.classList.remove('hidden');
                 themeToggleDarkIcon.classList.add('hidden');
             } else {

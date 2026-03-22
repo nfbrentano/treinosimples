@@ -78,7 +78,7 @@
                 Forge Your <span class="text-fitness-primary">Limits</span>
             </h1>
             <p class="mt-2 text-gray-400 text-sm font-medium tracking-widest uppercase text-center">Portal de
-                Treinamento do Gui Gaspar</p>
+                Treinamentos</p>
         </header>
 
         <!-- LoginForm -->
@@ -94,6 +94,15 @@
                             id="cpf" maxlength="14" name="cpf" placeholder="000.000.000-00" required="" type="text"
                             autocomplete="off" />
                     </div>
+                </div>
+
+                <!-- Remember Me Checkbox -->
+                <div class="flex items-center space-x-3 ml-1">
+                    <input type="checkbox" id="save-cpf" name="save-cpf" 
+                        class="w-5 h-5 rounded border-white/20 bg-white/10 text-fitness-primary focus:ring-fitness-primary focus:ring-offset-fitness-dark transition-all duration-200 cursor-pointer">
+                    <label for="save-cpf" class="text-xs font-semibold uppercase tracking-wider text-gray-300 cursor-pointer select-none">
+                        Salvar CPF neste dispositivo
+                    </label>
                 </div>
 
                 <!-- Error Message -->
@@ -133,6 +142,45 @@
         const loading = document.getElementById('loading');
         const errorMsg = document.getElementById('error-msg');
         const btnAccess = document.getElementById('btn-access');
+        const saveCpfCheckbox = document.getElementById('save-cpf');
+
+        // Chave simples para "criptografia" (ofuscação reversível)
+        const STORAGE_KEY = 'saved_cpf_enc';
+        const SECRET_KEY = 'elite-fitness-secure-key';
+
+        function encrypt(text) {
+            return btoa(text.split('').map((char, i) => 
+                String.fromCharCode(char.charCodeAt(0) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length))
+            ).join(''));
+        }
+
+        function decrypt(encoded) {
+            try {
+                const text = atob(encoded);
+                return text.split('').map((char, i) => 
+                    String.fromCharCode(char.charCodeAt(0) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length))
+                ).join('');
+            } catch (e) {
+                return '';
+            }
+        }
+
+        // Carregar CPF salvo ao iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedEnc = localStorage.getItem(STORAGE_KEY);
+            if (savedEnc) {
+                const decryptedCpf = decrypt(savedEnc);
+                if (decryptedCpf && decryptedCpf.length === 11) {
+                    // Formatar para o input
+                    let formatted = decryptedCpf.slice(0, 3) + '.' + 
+                                   decryptedCpf.slice(3, 6) + '.' + 
+                                   decryptedCpf.slice(6, 9) + '-' + 
+                                   decryptedCpf.slice(9, 11);
+                    cpfInput.value = formatted;
+                    saveCpfCheckbox.checked = true;
+                }
+            }
+        });
 
         // Máscara de CPF
         cpfInput.addEventListener('input', function (e) {
@@ -173,6 +221,14 @@
                 if (response.ok) {
                     // Login Sucesso
                     localStorage.setItem('user_cpf', rawCpf);
+                    
+                    // Persistência se o checkbox estiver marcado
+                    if (saveCpfCheckbox.checked) {
+                        localStorage.setItem(STORAGE_KEY, encrypt(rawCpf));
+                    } else {
+                        localStorage.removeItem(STORAGE_KEY);
+                    }
+
                     window.location.href = 'treinos.html';
                 } else {
                     showError(data.error || 'Erro ao acessar treinos');

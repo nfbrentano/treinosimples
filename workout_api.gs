@@ -107,7 +107,7 @@ function getStudentStats(cpf, ss, sheet) {
   weeklyGoal = parseGoal(valG1) || parseGoal(valG2) || 3;
   if (isNaN(weeklyGoal) || !weeklyGoal) weeklyGoal = 3;
 
-  const uniqueTrainedDates = new Set(); // Conjunto de chaves "yyyy-mm-dd"
+  const trainedDatesWithTypes = {}; // Objeto { "yyyy-mm-dd": "TIPO" }
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -128,11 +128,9 @@ function getStudentStats(cpf, ss, sheet) {
     if (isNaN(rowDate.getTime())) continue;
 
     // Chave única para o dia (para deduplicar treinos no mesmo dia)
-    const dateKey = Utilities.formatDate(rowDate, "GMT-3", "yyyy-MM-dd");
-    const concluido = String(row[4]).trim().toUpperCase() === "SIM";
-
+    const workoutType = String(row[3]).trim().toUpperCase();
     if (concluido) {
-      uniqueTrainedDates.add(dateKey);
+      trainedDatesWithTypes[dateKey] = workoutType;
       
       // Conta treinos apenas do mês/ano atual
       if (rowDate.getMonth() === currentMonth && rowDate.getFullYear() === currentYear) {
@@ -153,10 +151,11 @@ function getStudentStats(cpf, ss, sheet) {
   sunday.setDate(diff);
   sunday.setHours(0, 0, 0, 0);
 
-  uniqueTrainedDates.forEach(dateKey => {
+  Object.keys(trainedDatesWithTypes).forEach(dateKey => {
     const parts = dateKey.split('-');
     const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
-    calendarData.push(formatted);
+    const type = trainedDatesWithTypes[dateKey];
+    calendarData.push({ date: formatted, type: type });
     
     const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
 
@@ -180,11 +179,11 @@ function getStudentStats(cpf, ss, sheet) {
   const toKey = (d) => Utilities.formatDate(d, "GMT-3", "yyyy-MM-dd");
 
   // Se não treinou hoje, verifica se treinou ontem para manter a streak viva
-  if (!uniqueTrainedDates.has(toKey(checkDate))) {
+  if (!trainedDatesWithTypes[toKey(checkDate)]) {
     checkDate.setDate(checkDate.getDate() - 1);
   }
 
-  while (uniqueTrainedDates.has(toKey(checkDate))) {
+  while (trainedDatesWithTypes[toKey(checkDate)]) {
     streak++;
     checkDate.setDate(checkDate.getDate() - 1);
   }

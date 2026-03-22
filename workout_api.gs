@@ -128,7 +128,10 @@ function getStudentStats(cpf, ss, sheet) {
     if (isNaN(rowDate.getTime())) continue;
 
     // Chave única para o dia (para deduplicar treinos no mesmo dia)
+    const dateKey = Utilities.formatDate(rowDate, "GMT-3", "yyyy-MM-dd");
+    const concluido = String(row[4]).trim().toUpperCase() === "SIM";
     const workoutType = String(row[3]).trim().toUpperCase();
+    
     if (concluido) {
       trainedDatesWithTypes[dateKey] = workoutType;
       

@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html class="dark" lang="pt-BR">
+<html lang="pt-BR">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Estatísticas - Fitness App</title>
+    <!-- Dark Mode initialization -->
+    <script>
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -74,7 +82,10 @@
             </button>
             <h1 class="text-xl font-bold tracking-tight font-display uppercase italic text-primary">Minhas Estatísticas
             </h1>
-            <div class="size-10"></div>
+            <button id="theme-toggle" class="size-10 flex items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+                <span id="theme-toggle-dark-icon" class="material-symbols-outlined text-primary hidden">dark_mode</span>
+                <span id="theme-toggle-light-icon" class="material-symbols-outlined text-primary hidden">light_mode</span>
+            </button>
         </div>
     </header>
 
@@ -326,6 +337,30 @@
             localStorage.removeItem('user_cpf');
             window.location.href = 'index.html';
         }
+
+        // Logic para Alternar Temas
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        function updateThemeIcons() {
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                themeToggleLightIcon.classList.add('hidden');
+                themeToggleDarkIcon.classList.remove('hidden');
+            }
+        }
+
+        updateThemeIcons();
+
+        themeToggleBtn.addEventListener('click', function() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcons();
+        });
     </script>
 </body>
 

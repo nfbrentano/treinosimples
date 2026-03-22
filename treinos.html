@@ -4,9 +4,18 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <title>Meus Treinos - Elite Fitness</title>
+    <!-- Dark Mode initialization -->
+    <script>
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -28,12 +37,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <style>
-        body { background-color: #0A0A0A; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #0A0A0A; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s ease; }
+        .light body { background-color: #f3f4f6; }
         .custom-checkbox:checked + label { background-color: #CCFF00; color: #000; border-color: #CCFF00; }
         .custom-checkbox:checked + label .check-icon { opacity: 1; transform: scale(1.1); }
         .progress-ring { transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
         /* Glassmorphism effects */
         .glass-header { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .light .glass-header { background: rgba(255, 255, 255, 0.8); border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0A0A0A; }
         ::-webkit-scrollbar-thumb { background: #CCFF00; border-radius: 10px; }
@@ -63,6 +74,11 @@
                 <div class="h-10 w-10 rounded-full bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center">
                     <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
                 </div>
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="h-10 w-10 rounded-full bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center hover:bg-brand-primary/20 transition-all">
+                    <span id="theme-toggle-dark-icon" class="material-symbols-outlined text-brand-primary hidden">dark_mode</span>
+                    <span id="theme-toggle-light-icon" class="material-symbols-outlined text-brand-primary hidden">light_mode</span>
+                </button>
             </div>
         </div>
         <!-- Progress Bar (Mini) -->
@@ -226,16 +242,16 @@
 
             data.forEach((ex, index) => {
                 const card = document.createElement('article');
-                card.className = "group bg-brand-surface rounded-[2rem] overflow-hidden shadow-2xl border border-white/5 transition-all duration-300 hover:border-brand-primary/30 hover:translate-y-[-4px]";
+                card.className = "group bg-brand-surface light:bg-white rounded-[2rem] overflow-hidden shadow-2xl border border-white/5 light:border-black/5 transition-all duration-300 hover:border-brand-primary/30 hover:translate-y-[-4px]";
                 card.innerHTML = `
                     <div class="p-8 pb-6">
                         <div class="flex justify-between items-start mb-2">
-                            <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white leading-tight">${ex.exercicio}</h2>
+                            <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white light:text-black leading-tight">${ex.exercicio}</h2>
                             <span class="text-[10px] font-black bg-brand-primary/10 text-brand-primary px-3 py-1 rounded-full uppercase tracking-widest border border-brand-primary/20">${currentTab}</span>
                         </div>
                         <div class="flex items-center justify-between mt-2">
                             <p class="text-brand-primary/60 text-[10px] font-black uppercase tracking-[0.2em]">Técnica e Execução</p>
-                            <div class="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
+                            <div class="flex items-center gap-2 bg-white/5 light:bg-black/5 px-3 py-1.5 rounded-xl border border-white/10 light:border-black/10">
                                 <span class="text-[10px] font-black uppercase text-gray-500">Peso:</span>
                                 <input type="text" value="${ex.peso || ''}" 
                                     onchange="updateWeight('${ex.exercicio}', this.value, '${currentTab}', ${index})"
@@ -352,6 +368,30 @@
             localStorage.removeItem('user_cpf');
             window.location.href = 'index.html';
         }
+
+        // Logic para Alternar Temas
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        function updateThemeIcons() {
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                themeToggleLightIcon.classList.add('hidden');
+                themeToggleDarkIcon.classList.remove('hidden');
+            }
+        }
+
+        updateThemeIcons();
+
+        themeToggleBtn.addEventListener('click', function() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcons();
+        });
     </script>
 </body>
 </html>

@@ -6,10 +6,19 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <title>Elite Fitness - Login</title>
     <!-- Tailwind CSS v3 CDN with Forms and Container-Queries -->
+    <!-- Dark Mode initialization -->
+    <script>
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -33,6 +42,10 @@
             background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.85)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuDnB-w-stwDlVHLW6lORVizsGA0aj1iYyiSjOi3VgB9tdTMby3xggQW-K12FuKR9U1Omdwwyf1Gt0J_6jckqYmDVJ0ifYAQOSW3cqiZy_OnoUyNLVQAlJ9PKnIWTCg4fbgvBfkspXfAD9Mkvhwtmjx2f-gkB3C0iICNpfb76bsoyRc4SRDiAuX3edT-Llq0bo8vuoJvi0AnCvUiuF6j-6QXpHDj_BzKB14xWKDYv5c5KrtVsW1uo9MyuYNiwCo9ZXPQquOEdUPIWhtw);
             background-size: cover;
             background-position: center;
+        }
+
+        .light .bg-image-overlay {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.9)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuDnB-w-stwDlVHLW6lORVizsGA0aj1iYyiSjOi3VgB9tdTMby3xggQW-K12FuKR9U1Omdwwyf1Gt0J_6jckqYmDVJ0ifYAQOSW3cqiZy_OnoUyNLVQAlJ9PKnIWTCg4fbgvBfkspXfAD9Mkvhwtmjx2f-gkB3C0iICNpfb76bsoyRc4SRDiAuX3edT-Llq0bo8vuoJvi0AnCvUiuF6j-6QXpHDj_BzKB14xWKDYv5c5KrtVsW1uo9MyuYNiwCo9ZXPQquOEdUPIWhtw);
         }
 
         .input-focus-effect:focus {
@@ -61,7 +74,14 @@
     </style>
 </head>
 
-<body class="bg-fitness-dark font-sans antialiased text-white">
+<body class="bg-fitness-dark light:bg-gray-100 font-sans antialiased text-white light:text-black transition-colors duration-300">
+    <!-- Theme Toggle -->
+    <div class="absolute top-6 right-6 z-50">
+        <button id="theme-toggle" class="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all">
+            <svg id="theme-toggle-dark-icon" class="hidden w-6 h-6 text-fitness-primary" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-6 h-6 text-fitness-primary" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464l-.707-.707a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414zm2.12 10.607a1 1 0 010-1.414l.706-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1z"></path></svg>
+        </button>
+    </div>
     <!-- MainContainer -->
     <main
         class="relative h-screen w-full flex flex-col justify-center items-center px-6 overflow-hidden bg-image-overlay">
@@ -85,12 +105,12 @@
         <section class="w-full max-w-sm">
             <form id="login-form" class="space-y-6">
                 <div class="space-y-2">
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 ml-1" for="cpf">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 light:text-gray-500 ml-1" for="cpf">
                         Digite seu CPF
                     </label>
                     <div class="relative">
                         <input
-                            class="w-full h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 text-white placeholder-gray-500 input-focus-effect transition-all duration-300 outline-none"
+                            class="w-full h-14 bg-white/10 light:bg-black/5 backdrop-blur-md border border-white/20 light:border-black/10 rounded-xl px-4 text-white light:text-black placeholder-gray-500 input-focus-effect transition-all duration-300 outline-none"
                             id="cpf" maxlength="14" name="cpf" placeholder="000.000.000-00" required="" type="text"
                             autocomplete="off" />
                     </div>
@@ -99,8 +119,8 @@
                 <!-- Remember Me Checkbox -->
                 <div class="flex items-center space-x-3 ml-1">
                     <input type="checkbox" id="save-cpf" name="save-cpf" 
-                        class="w-5 h-5 rounded border-white/20 bg-white/10 text-fitness-primary focus:ring-fitness-primary focus:ring-offset-fitness-dark transition-all duration-200 cursor-pointer">
-                    <label for="save-cpf" class="text-xs font-semibold uppercase tracking-wider text-gray-300 cursor-pointer select-none">
+                        class="w-5 h-5 rounded border-white/20 light:border-black/20 bg-white/10 light:bg-black/5 text-fitness-primary focus:ring-fitness-primary transition-all duration-200 cursor-pointer">
+                    <label for="save-cpf" class="text-xs font-semibold uppercase tracking-wider text-gray-300 light:text-gray-500 cursor-pointer select-none">
                         Salvar CPF neste dispositivo
                     </label>
                 </div>
@@ -259,6 +279,30 @@
                 btnAccess.style.opacity = '1';
             }
         }
+
+        // Logic para Alternar Temas
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        function updateThemeIcons() {
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                themeToggleLightIcon.classList.add('hidden');
+                themeToggleDarkIcon.classList.remove('hidden');
+            }
+        }
+
+        updateThemeIcons();
+
+        themeToggleBtn.addEventListener('click', function() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcons();
+        });
     </script>
 </body>
 

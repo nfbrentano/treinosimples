@@ -102,8 +102,15 @@
                         <h2
                             class="text-2xl font-black tracking-tight uppercase italic underline decoration-primary decoration-4 underline-offset-8">
                             Calendário de Hábitos</h2>
-                        <span id="label-month"
-                            class="text-sm font-bold text-slate-500 dark:text-slate-400 bg-primary/5 px-4 py-1 rounded-full border border-primary/10">---</span>
+                        <div class="flex items-center gap-2 bg-primary/5 px-2 py-1 rounded-full border border-primary/10">
+                            <button onclick="changeMonth(-1)" class="p-1 hover:bg-primary/20 rounded-full text-primary transition-colors flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">chevron_left</span>
+                            </button>
+                            <span id="label-month" class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 min-w-[120px] text-center">---</span>
+                            <button onclick="changeMonth(1)" class="p-1 hover:bg-primary/20 rounded-full text-primary transition-colors flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">chevron_right</span>
+                            </button>
+                        </div>
                     </div>
                     <div
                         class="bg-primary/5 dark:bg-primary/10 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden shadow-2xl">
@@ -274,9 +281,13 @@
             window.location.href = 'index.html';
         }
 
+        let currentCalendarDate = new Date();
+        let allTrainedDays = [];
+
         document.addEventListener('DOMContentLoaded', fetchStats);
 
         async function fetchStats() {
+            document.getElementById('loading-overlay').classList.remove('hidden');
             try {
                 const response = await fetch(`${API_URL}?cpf=${userCpf}&action=getStats`);
                 const data = await response.json();
@@ -288,6 +299,7 @@
                 }
 
                 currentStats = data;
+                allTrainedDays = data.calendarData || [];
                 updateUI(data);
             } catch (error) {
                 console.error('Erro ao buscar estatísticas:', error);
@@ -319,19 +331,32 @@
             }
 
             if (data.calendarData) {
-                renderCalendar(data.calendarData);
+                renderCalendar(allTrainedDays);
             }
+        }
+
+        function changeMonth(delta) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+            renderCalendar(allTrainedDays);
         }
 
         function renderCalendar(trainedDays) {
             const grid = document.getElementById('habit-grid');
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            // Limpar apenas os dias (mantendo as labels dos dias da semana)
+            const daysEls = grid.querySelectorAll('.aspect-square');
+            daysEls.forEach(el => el.remove());
+
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Criar um mapa de data -> tipo de treino para busca rápida
+            // Atualizar Label do Mês
+            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            document.getElementById('label-month').innerText = `${monthNames[month]} ${year}`;
+
+            // Mapa para busca rápida
             const trainedMap = {};
             trainedDays.forEach(item => {
                 trainedMap[item.date] = item.type;
@@ -341,10 +366,12 @@
                 grid.appendChild(createDot(null, false));
             }
 
+            const today = new Date();
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${String(day).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}/${year}`;
                 const workoutType = trainedMap[dateStr];
-                grid.appendChild(createDot(workoutType, day === now.getDate()));
+                const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+                grid.appendChild(createDot(workoutType, isToday));
             }
         }
 

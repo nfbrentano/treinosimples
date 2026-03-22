@@ -206,12 +206,33 @@ function doPost(e) {
     const payload = JSON.parse(e.postData.contents);
     const cpf = normalizeCpf(payload.cpf);
     
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Ação: Atualizar Meta Semanal
+    if (payload.action === 'updateGoal') {
+      const newGoal = parseInt(payload.newGoal);
+      if (isNaN(newGoal)) return jsonResponse({ error: "Meta inválida." }, 400);
+      
+      const studentSheet = ss.getSheetByName(cpf);
+      if (!studentSheet) return jsonResponse({ error: "Aluno não encontrado." }, 404);
+      
+      // Decidir onde salvar (G1 se for número, senão G2)
+      const valG1 = studentSheet.getRange("G1").getValue();
+      const isG1Num = typeof valG1 === 'number' && !isNaN(valG1);
+      
+      if (isG1Num) {
+        studentSheet.getRange("G1").setValue(newGoal);
+      } else {
+        studentSheet.getRange("G2").setValue(newGoal);
+      }
+      
+      return jsonResponse({ success: true, message: "Meta semanal atualizada para " + newGoal });
+    }
+
     let exerciciosParaAtualizar = [];
     if (payload.exercicios && Array.isArray(payload.exercicios)) {
       exerciciosParaAtualizar = payload.exercicios;
     }
-
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
     const historySheet = getOrCreateHistorySheet(ss);
     
     const now = new Date();

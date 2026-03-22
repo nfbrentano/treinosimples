@@ -52,7 +52,6 @@ function getStudentWorkouts(cpf, ss, sheet) {
 
   const todayStr = getNormalizedDate(new Date(), ss);
   const historySheet = getOrCreateHistorySheet(ss);
-  historySheet.getRange("B:B").setNumberFormat("@");
   const historyData = historySheet.getDataRange().getDisplayValues();
   
   const completedToday = new Set();
@@ -215,7 +214,6 @@ function doPost(e) {
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const historySheet = getOrCreateHistorySheet(ss);
-    historySheet.getRange("B:B").setNumberFormat("@");
     
     const now = new Date();
     const timestamp = Utilities.formatDate(now, ss.getSpreadsheetTimeZone(), "dd/MM/yyyy HH:mm:ss");
@@ -270,7 +268,6 @@ function getOrCreateHistorySheet(ss) {
     sheet = ss.insertSheet("HISTORICO");
     sheet.appendRow(["DATA/HORA", "CPF", "EXERCICIO", "TREINO", "STATUS", "PESO"]);
     sheet.getRange(1, 1, 1, 6).setFontWeight("bold").setBackground("#f3f3f3");
-    sheet.getRange("B:B").setNumberFormat("@");
     sheet.setFrozenRows(1);
   }
   return sheet;

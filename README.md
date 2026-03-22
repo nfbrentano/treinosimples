@@ -28,6 +28,7 @@ O sistema depende de uma estrutura específica para funcionar corretamente. O **
 | **B** | Mídia | Link para imagem (.jpg, .png), GIF ou Vídeo (.mp4). |
 | **C** | Treino | Categoria do treino (Ex: A, B, C, Cardio). |
 | **D** | Instruções | Detalhes de execução (Ex: 4x12 pesado). |
+| **E** | Peso | Carga utilizada pelo aluno (editável no app). |
 | **G1 ou G2** | Meta | Número de treinos objetivo por semana. |
 
 ### 2. Aba HISTORICO (Gerada Automaticamente)
@@ -41,6 +42,7 @@ Onde todos os treinos concluídos são registrados para gerar as estatísticas:
 | **C** | EXERCICIO | Nome do exercício concluído. |
 | **D** | TREINO | Categoria (A, B, C...) do exercício. |
 | **E** | STATUS | Confirmação de conclusão (Sempre "SIM"). |
+| **F** | PESO | Carga registrada no momento do treino. |
 
 ---
 

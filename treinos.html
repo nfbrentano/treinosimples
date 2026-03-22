@@ -197,10 +197,17 @@
             const localData = JSON.parse(localStorage.getItem(localKey) || '{}');
 
             if (serverData.workouts) {
-                Object.keys(localData).forEach(exName => {
-                    Object.keys(serverData.workouts).forEach(tabKey => {
-                        const ex = serverData.workouts[tabKey].find(e => e.exercicio === exName);
-                        if (ex) ex.concluido = localData[exName];
+                Object.keys(serverData.workouts).forEach(tabKey => {
+                    serverData.workouts[tabKey].forEach(ex => {
+                        if (localData[ex.exercicio]) {
+                            // Se for objeto (novo formato) ou boolean (legado)
+                            if (typeof localData[ex.exercicio] === 'object') {
+                                ex.concluido = localData[ex.exercicio].concluido;
+                                ex.peso = localData[ex.exercicio].peso || ex.peso;
+                            } else {
+                                ex.concluido = localData[ex.exercicio];
+                            }
+                        }
                     });
                 });
             }
@@ -226,7 +233,16 @@
                             <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white leading-tight">${ex.exercicio}</h2>
                             <span class="text-[10px] font-black bg-brand-primary/10 text-brand-primary px-3 py-1 rounded-full uppercase tracking-widest border border-brand-primary/20">${currentTab}</span>
                         </div>
-                        <p class="text-brand-primary/60 text-[10px] font-black uppercase tracking-[0.2em]">Técnica e Exclusão</p>
+                        <div class="flex items-center justify-between mt-2">
+                            <p class="text-brand-primary/60 text-[10px] font-black uppercase tracking-[0.2em]">Técnica e Execução</p>
+                            <div class="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
+                                <span class="text-[10px] font-black uppercase text-gray-500">Peso:</span>
+                                <input type="text" value="${ex.peso || ''}" 
+                                    onchange="updateWeight('${ex.exercicio}', this.value, '${currentTab}', ${index})"
+                                    placeholder="0kg"
+                                    class="w-12 bg-transparent border-none p-0 text-xs font-black text-brand-primary focus:ring-0 placeholder-gray-700 text-center">
+                            </div>
+                        </div>
                     </div>
                     <div class="aspect-video w-full bg-black relative flex items-center justify-center overflow-hidden border-y border-white/5">
                         ${renderMedia(ex.gif, ex.exercicio)}
@@ -264,14 +280,32 @@
             if (workoutData.workouts[tab] && workoutData.workouts[tab][index]) {
                 workoutData.workouts[tab][index].concluido = isChecked;
             }
-            const localKey = `pending_${userCpf}`;
-            const localData = JSON.parse(localStorage.getItem(localKey) || '{}');
-            localData[exercicio] = isChecked;
-            localStorage.setItem(localKey, JSON.stringify(localData));
+            saveLocalState();
 
             const labelSpan = document.querySelector(`label[for="ex-${tab}-${index}"] span`);
             if (labelSpan) labelSpan.innerText = isChecked ? 'Finalizado' : 'Concluir';
             updateProgress();
+        }
+
+        function updateWeight(exercicio, weight, tab, index) {
+            if (workoutData.workouts[tab] && workoutData.workouts[tab][index]) {
+                workoutData.workouts[tab][index].peso = weight;
+            }
+            saveLocalState();
+        }
+
+        function saveLocalState() {
+            const localKey = `pending_${userCpf}`;
+            const localData = {};
+            Object.keys(workoutData.workouts).forEach(tab => {
+                workoutData.workouts[tab].forEach(ex => {
+                    localData[ex.exercicio] = { 
+                        concluido: ex.concluido,
+                        peso: ex.peso
+                    };
+                });
+            });
+            localStorage.setItem(localKey, JSON.stringify(localData));
         }
 
         async function saveWorkout() {
@@ -280,7 +314,12 @@
             Object.keys(workoutData.workouts).forEach(tabKey => allExercises.push(...workoutData.workouts[tabKey]));
             const payload = {
                 cpf: userCpf,
-                exercicios: allExercises.map(e => ({ nome: e.exercicio, tipo: e.tipo, concluido: e.concluido }))
+                exercicios: allExercises.map(e => ({ 
+                    nome: e.exercicio, 
+                    tipo: e.tipo, 
+                    concluido: e.concluido,
+                    peso: e.peso
+                }))
             };
             try {
                 const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });

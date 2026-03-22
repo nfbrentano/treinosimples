@@ -78,9 +78,10 @@ function getStudentWorkouts(cpf, ss, sheet) {
     const gif = row[1];
     const tipo = String(row[2]).toUpperCase().trim();
     const instrucoes = row[3];
+    const peso = row[4] || ""; // Coluna E
     const concluido = completedToday.has(exercicioUpper);
 
-    const item = { exercicio, gif, tipo, instrucoes, concluido };
+    const item = { exercicio, gif, tipo, instrucoes, peso, concluido };
     if (!workouts[tipo]) workouts[tipo] = [];
     workouts[tipo].push(item);
   }
@@ -220,13 +221,30 @@ function doPost(e) {
     const timestamp = Utilities.formatDate(now, ss.getSpreadsheetTimeZone(), "dd/MM/yyyy HH:mm:ss");
 
     exerciciosParaAtualizar.forEach(item => {
+      const nomeEx = item.nome || item.exercicio;
+      const pesoInformado = item.peso || "";
+
+      // 1. Atualizar o peso na aba do aluno (Coluna E)
+      const studentSheet = ss.getSheetByName(cpf);
+      if (studentSheet) {
+        const studentData = studentSheet.getDataRange().getValues();
+        for (let i = 1; i < studentData.length; i++) {
+          if (String(studentData[i][0]).trim().toUpperCase() === nomeEx.toUpperCase()) {
+            studentSheet.getRange(i + 1, 5).setValue(pesoInformado); // Coluna E é a 5
+            break;
+          }
+        }
+      }
+
+      // 2. Registrar no Histórico
       if (item.concluido) {
         historySheet.appendRow([
           timestamp,
           "'" + cpf, 
-          item.nome || item.exercicio,
+          nomeEx,
           item.tipo || "N/A",
-          "SIM"
+          "SIM",
+          pesoInformado
         ]);
       }
     });
@@ -250,8 +268,8 @@ function getOrCreateHistorySheet(ss) {
   let sheet = ss.getSheetByName("HISTORICO");
   if (!sheet) {
     sheet = ss.insertSheet("HISTORICO");
-    sheet.appendRow(["DATA/HORA", "CPF", "EXERCICIO", "TREINO", "STATUS"]);
-    sheet.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#f3f3f3");
+    sheet.appendRow(["DATA/HORA", "CPF", "EXERCICIO", "TREINO", "STATUS", "PESO"]);
+    sheet.getRange(1, 1, 1, 6).setFontWeight("bold").setBackground("#f3f3f3");
     sheet.getRange("B:B").setNumberFormat("@");
     sheet.setFrozenRows(1);
   }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
@@ -33,23 +34,66 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
     <style>
-        body { background-color: #0A0A0A; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s ease; }
-        .light body { background-color: #f3f4f6; }
-        .custom-checkbox:checked + label { background-color: #CCFF00; color: #000; border-color: #CCFF00; }
-        .custom-checkbox:checked + label .check-icon { opacity: 1; transform: scale(1.1); }
-        .progress-ring { transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        body {
+            background-color: #0A0A0A;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .light body {
+            background-color: #f3f4f6;
+        }
+
+        .custom-checkbox:checked+label {
+            background-color: #CCFF00;
+            color: #000;
+            border-color: #CCFF00;
+        }
+
+        .custom-checkbox:checked+label .check-icon {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .progress-ring {
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
         /* Glassmorphism effects */
-        .glass-header { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .light .glass-header { background: rgba(255, 255, 255, 0.8); border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0A0A0A; }
-        ::-webkit-scrollbar-thumb { background: #CCFF00; border-radius: 10px; }
+        .glass-header {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .light .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #CCFF00;
+            border-radius: 10px;
+        }
     </style>
 </head>
+
 <body class="text-white font-sans antialiased min-h-screen pb-32">
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center">
@@ -64,20 +108,22 @@
                 <h1 class="text-2xl font-black italic uppercase tracking-tighter leading-none">
                     Elite <span class="text-brand-primary">Fitness</span>
                 </h1>
-                <p id="current-date" class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Sexta, 12 de Outubro</p>
+                <p id="current-date" class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Sexta,
+                    12 de Outubro</p>
             </div>
             <div class="flex items-center gap-4">
                 <div class="text-right hidden sm:block">
                     <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Seu Progresso</p>
                     <p id="progress-text" class="text-lg font-black text-brand-primary">0%</p>
                 </div>
-                <div class="h-10 w-10 rounded-full bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
-                </div>
+
                 <!-- Theme Toggle -->
-                <button id="theme-toggle" class="h-10 w-10 rounded-full bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center hover:bg-brand-primary/20 transition-all">
-                    <span id="theme-toggle-dark-icon" class="material-symbols-outlined text-brand-primary hidden">dark_mode</span>
-                    <span id="theme-toggle-light-icon" class="material-symbols-outlined text-brand-primary hidden">light_mode</span>
+                <button id="theme-toggle"
+                    class="h-10 w-10 rounded-full bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center hover:bg-brand-primary/20 transition-all">
+                    <span id="theme-toggle-dark-icon"
+                        class="material-symbols-outlined text-brand-primary hidden">dark_mode</span>
+                    <span id="theme-toggle-light-icon"
+                        class="material-symbols-outlined text-brand-primary hidden">light_mode</span>
                 </button>
             </div>
         </div>
@@ -88,13 +134,14 @@
     </header>
 
     <main class="max-w-6xl mx-auto px-6 pt-10">
-        
+
         <!-- Tab Navigation (Centered) -->
         <div class="max-w-2xl mx-auto">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xs font-black uppercase tracking-[0.2em] text-gray-500">Categorias de Treino</h2>
             </div>
-            <div id="workout-tabs" class="flex gap-2 p-1.5 bg-brand-accent rounded-2xl mb-12 overflow-x-auto no-scrollbar">
+            <div id="workout-tabs"
+                class="flex gap-2 p-1.5 bg-brand-accent rounded-2xl mb-12 overflow-x-auto no-scrollbar">
                 <!-- Tabs injected dynamically -->
             </div>
         </div>
@@ -106,29 +153,41 @@
 
         <!-- Save Action Area (Centered) -->
         <div class="max-w-2xl mx-auto mt-16 mb-24 px-4 sm:px-0">
-            <button id="btn-save-workout" onclick="saveWorkout()" class="group relative w-full h-20 bg-brand-primary hover:bg-opacity-90 active:scale-95 text-black font-black text-xl uppercase tracking-widest rounded-3xl shadow-2xl shadow-brand-primary/20 transition-all duration-300 flex items-center justify-center overflow-hidden">
+            <button id="btn-save-workout" onclick="saveWorkout()"
+                class="group relative w-full h-20 bg-brand-primary hover:bg-opacity-90 active:scale-95 text-black font-black text-xl uppercase tracking-widest rounded-3xl shadow-2xl shadow-brand-primary/20 transition-all duration-300 flex items-center justify-center overflow-hidden">
                 <span class="relative z-10 flex items-center gap-3">
                     Salvar Progresso
-                    <svg class="w-6 h-6 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+                    <svg class="w-6 h-6 transform group-hover:translate-x-2 transition-transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="3"></path>
+                    </svg>
                 </span>
             </button>
-            <p class="text-center text-[10px] text-gray-500 mt-6 uppercase font-bold tracking-[0.15em] leading-relaxed max-w-xs mx-auto">Sincronize com o Personal Trainer para atualizar suas estatísticas.</p>
+            <p
+                class="text-center text-[10px] text-gray-500 mt-6 uppercase font-bold tracking-[0.15em] leading-relaxed max-w-xs mx-auto">
+                Sincronize com o Personal Trainer para atualizar suas estatísticas.</p>
         </div>
     </main>
 
     <!-- Bottom Navigation Bar (Responsive - Unified Style) -->
-    <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-white/5 bg-brand-dark/95 backdrop-blur-xl px-4 pb-8 pt-4">
+    <nav
+        class="fixed bottom-0 left-0 right-0 z-40 border-t border-white/5 bg-brand-dark/95 backdrop-blur-xl px-4 pb-8 pt-4">
         <div class="max-w-2xl mx-auto flex items-center justify-around">
             <a class="flex flex-col items-center gap-2 text-brand-primary scale-110" href="treinos.html">
                 <span class="material-symbols-outlined text-3xl fill-[1]">pool</span>
                 <p class="text-[10px] font-black uppercase tracking-widest">Treino</p>
             </a>
-            <a class="flex flex-col items-center gap-2 text-gray-500 hover:text-brand-primary transition-all duration-300 group" href="estatisticas.html">
-                <span class="material-symbols-outlined text-3xl group-hover:scale-110 group-active:scale-95 transition-transform">bar_chart</span>
+            <a class="flex flex-col items-center gap-2 text-gray-500 hover:text-brand-primary transition-all duration-300 group"
+                href="estatisticas.html">
+                <span
+                    class="material-symbols-outlined text-3xl group-hover:scale-110 group-active:scale-95 transition-transform">bar_chart</span>
                 <p class="text-[10px] font-black uppercase tracking-widest">Estatísticas</p>
             </a>
-            <a class="flex flex-col items-center gap-2 text-gray-500 hover:text-brand-primary transition-all duration-300 group" href="#" onclick="logout()">
-                <span class="material-symbols-outlined text-3xl group-hover:scale-110 group-active:scale-95 transition-transform">logout</span>
+            <a class="flex flex-col items-center gap-2 text-gray-500 hover:text-brand-primary transition-all duration-300 group"
+                href="#" onclick="logout()">
+                <span
+                    class="material-symbols-outlined text-3xl group-hover:scale-110 group-active:scale-95 transition-transform">logout</span>
                 <p class="text-[10px] font-black uppercase tracking-widest">Sair</p>
             </a>
         </div>
@@ -154,7 +213,7 @@
             try {
                 const response = await fetch(`${API_URL}?cpf=${userCpf}`);
                 const data = await response.json();
-                
+
                 if (data.error) {
                     alert(data.error);
                     logout();
@@ -163,12 +222,12 @@
 
                 workoutData = mergeWithLocalStorage(data);
                 renderTabs();
-                
+
                 const tabKeys = Object.keys(workoutData.workouts).sort();
                 if (tabKeys.length > 0 && !tabKeys.includes(currentTab)) {
                     currentTab = tabKeys[0];
                 }
-                
+
                 renderWorkouts();
             } catch (error) {
                 console.error('Erro ao buscar treinos:', error);
@@ -181,7 +240,7 @@
         function renderTabs() {
             const tabsContainer = document.getElementById('workout-tabs');
             const tabKeys = Object.keys(workoutData.workouts).sort();
-            
+
             tabsContainer.innerHTML = '';
             tabKeys.forEach(key => {
                 const btn = document.createElement('button');
@@ -234,7 +293,7 @@
             const list = document.getElementById('exercise-list');
             const data = workoutData.workouts[currentTab] || [];
             list.innerHTML = '';
-            
+
             if (data.length === 0) {
                 list.innerHTML = `<div class="col-span-full py-20 text-center"><p class="text-gray-600 font-black uppercase tracking-[0.3em] text-[10px]">Nenhum exercício carregado</p></div>`;
                 return;
@@ -315,7 +374,7 @@
             const localData = {};
             Object.keys(workoutData.workouts).forEach(tab => {
                 workoutData.workouts[tab].forEach(ex => {
-                    localData[ex.exercicio] = { 
+                    localData[ex.exercicio] = {
                         concluido: ex.concluido,
                         peso: ex.peso
                     };
@@ -330,9 +389,9 @@
             Object.keys(workoutData.workouts).forEach(tabKey => allExercises.push(...workoutData.workouts[tabKey]));
             const payload = {
                 cpf: userCpf,
-                exercicios: allExercises.map(e => ({ 
-                    nome: e.exercicio, 
-                    tipo: e.tipo, 
+                exercicios: allExercises.map(e => ({
+                    nome: e.exercicio,
+                    tipo: e.tipo,
                     concluido: e.concluido,
                     peso: e.peso
                 }))
@@ -386,7 +445,7 @@
 
         updateThemeIcons();
 
-        themeToggleBtn.addEventListener('click', function() {
+        themeToggleBtn.addEventListener('click', function () {
             document.documentElement.classList.toggle('dark');
             const isDark = document.documentElement.classList.contains('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -394,4 +453,5 @@
         });
     </script>
 </body>
+
 </html>

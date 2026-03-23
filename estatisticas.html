@@ -200,6 +200,12 @@
                             <span
                                 class="material-symbols-outlined text-primary text-4xl fill-[1]">local_fire_department</span>
                         </div>
+                        <button onclick="shareStreak()"
+                            class="p-4 bg-white/10 hover:bg-white/20 dark:bg-black/20 dark:hover:bg-black/40 rounded-2xl transition-all duration-300 flex items-center gap-2 group/btn border border-white/10">
+                            <span
+                                class="material-symbols-outlined text-primary text-2xl group-hover/btn:scale-110 transition-transform">share</span>
+                            <span class="text-xs font-black uppercase tracking-widest text-primary hidden sm:block">Compartilhar</span>
+                        </button>
                     </div>
                     <div>
                         <p
@@ -628,6 +634,42 @@
             }
         }
 
+        async function shareStreak() {
+            const streak = (currentStats && currentStats.streak) || 0;
+            const text = `🔥 Minha ofensiva é de ${streak} dias consecutivos no TreinoSimples! Trace seu caminho para o topo! 🚀`;
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'TreinoSimples - Ofensiva',
+                        text: text,
+                        url: 'https://nfbrentano.github.io/treinosimples/'
+                    });
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        console.error('Share failed:', err);
+                    }
+                }
+            } else {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showToast('Mensagem copiada! 🔥');
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                }
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.innerText = message;
+            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+            }, 3000);
+        }
+
         // Logic para Alternar Temas
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
@@ -653,6 +695,10 @@
             updateThemeIcons();
         });
     </script>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl bg-slate-900/90 text-white text-sm font-bold shadow-2xl opacity-0 translate-y-4 pointer-events-none transition-all duration-300 backdrop-blur-md border border-white/10">
+        Mensagem copiada! 🔥
+    </div>
 </body>
 
 </html>

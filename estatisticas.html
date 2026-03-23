@@ -6,7 +6,6 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Estatísticas - Fitness App</title>
     <!-- Dark Mode initialization -->
-    <!-- Dark Mode initialization -->
     <script>
         const theme = localStorage.getItem('theme');
         if (theme === 'light') {
@@ -17,7 +16,8 @@
     </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800;900&amp;family=Inter:wght@400;600;700&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -28,25 +28,81 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#ec5b13",
-                        "accent": "#0bda87",
-                        "background-light": "#f8f6f6",
-                        "background-dark": "#221610",
+                        "on-surface-variant": "#e4bfb1",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-container-high": "#2a2a2a",
+                        "primary-fixed-dim": "#ffb599",
+                        "outline": "#ab8a7d",
+                        "tertiary-fixed-dim": "#abd600",
+                        "on-primary": "#5a1c00",
+                        "secondary-container": "#4a4949",
+                        "on-secondary-fixed-variant": "#474646",
+                        "surface": "#131313",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-container": "#201f1f",
+                        "tertiary-fixed": "#c3f400",
+                        "on-tertiary-fixed": "#161e00",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-surface": "#e5e2e1",
+                        "surface-container-highest": "#353534",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-container-low": "#1c1b1b",
+                        "on-primary-fixed": "#370e00",
+                        "inverse-surface": "#e5e2e1",
+                        "on-background": "#e5e2e1",
+                        "inverse-primary": "#a63b00",
+                        "secondary": "#c8c6c5",
+                        "on-tertiary-container": "#253000",
+                        "error-container": "#93000a",
+                        "primary": "#ffb599",
+                        "on-tertiary-fixed-variant": "#3c4d00",
+                        "primary-fixed": "#ffdbce",
+                        "on-error-container": "#ffdad6",
+                        "primary-container": "#ff5f00",
+                        "outline-variant": "#5b4137",
+                        "background": "#131313",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#313030",
+                        "surface-variant": "#353534",
+                        "tertiary-container": "#7e9f00",
+                        "on-tertiary": "#283500",
+                        "on-secondary": "#313030",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "on-primary-container": "#531a00",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#bab8b7",
+                        "tertiary": "#abd600",
+                        "surface-dim": "#131313",
+                        "surface-tint": "#ffb599",
+                        "surface-bright": "#3a3939"
                     },
                     fontFamily: {
-                        "display": ["Public Sans"]
+                        "headline": ["Lexend"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "display": ["Lexend"]
                     },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem", "2xl": "1rem" },
                 },
             },
         }
     </script>
     <style>
-        body {
-            min-height: 100dvh;
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
-        .bg-primary-glow {
-            background: radial-gradient(circle at center, rgba(236, 91, 19, 0.15) 0%, transparent 70%);
+        .kinetic-gradient {
+            background: linear-gradient(135deg, #ffb599 0%, #ff5f00 100%);
+        }
+
+        .glass-card {
+            background: rgba(58, 57, 57, 0.4);
+            backdrop-filter: blur(12px);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
 
         /* Custom scrollbar for better look */
@@ -66,205 +122,88 @@
 </head>
 
 <body
-    class="bg-gray-100 dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+    class="bg-[#f8f6f6] dark:bg-[#131313] font-body text-slate-900 dark:text-[#e5e2e1] min-h-[100dvh] flex flex-col transition-colors duration-300 pb-32">
 
     <!-- Loading Overlay -->
     <div id="loading-overlay"
-        class="fixed inset-0 z-50 bg-background-dark/90 backdrop-blur-md flex flex-col items-center justify-center">
-        <div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-        <p class="mt-4 text-primary font-bold uppercase tracking-widest text-sm italic">Carregando dados...</p>
+        class="fixed inset-0 z-[100] bg-white/90 dark:bg-background/90 backdrop-blur-md flex flex-col items-center justify-center">
+        <div
+            class="w-12 h-12 border-4 border-primary-container/20 border-t-primary-container rounded-full animate-spin">
+        </div>
+        <p class="mt-4 text-primary-container font-headline font-bold uppercase tracking-widest text-sm italic">
+            Carregando dados...</p>
     </div>
 
-    <!-- Header -->
+    <!-- TopAppBar -->
     <header
-        class="sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
-        <div class="max-w-6xl mx-auto px-4 w-full h-16 flex items-center justify-between">
-            <button onclick="window.location.href='treinos.html'"
-                class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
-                <span class="material-symbols-outlined">arrow_back</span>
-            </button>
-            <h1 class="text-xl font-bold tracking-tight font-display uppercase italic text-primary">Minhas Estatísticas
-            </h1>
-            <button id="theme-toggle" class="size-10 flex items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
-                <span id="theme-toggle-dark-icon" class="material-symbols-outlined text-primary hidden">dark_mode</span>
-                <span id="theme-toggle-light-icon" class="material-symbols-outlined text-primary hidden">light_mode</span>
-            </button>
+        class="fixed top-0 w-full z-50 bg-[#f8f6f6]/80 dark:bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-6 py-4 border-b border-black/5 dark:border-white/5 shadow-sm dark:shadow-none transition-colors duration-300">
+        <button onclick="window.location.href='treinos.html'"
+            class="text-slate-900 dark:text-[#e5e2e1] flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <div class="text-[#ff5f00] font-headline font-black italic text-2xl tracking-tighter">
+            TreinouSimples
         </div>
+        <button id="theme-toggle"
+            class="size-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+            <span id="theme-toggle-dark-icon" class="material-symbols-outlined text-[#ff5f00] hidden">dark_mode</span>
+            <span id="theme-toggle-light-icon" class="material-symbols-outlined text-[#ff5f00] hidden">light_mode</span>
+        </button>
     </header>
 
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl pb-32">
-        <!-- Top Stats (Prioritized) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mt-2">
-            <!-- Streak Card (Moved to top) -->
+    <main class="pt-24 px-6 max-w-4xl mx-auto space-y-8 flex-grow w-full">
+        <!-- Dashboard Summary Section -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Streak Card -->
             <div
-                class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
-                <div class="flex items-center justify-between">
-                    <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
-                        <span
-                            class="material-symbols-outlined text-primary text-4xl fill-[1]">local_fire_department</span>
+                class="bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-8 flex flex-col justify-between relative overflow-hidden group border border-black/5 dark:border-white/5 hover:border-primary-container/40 transition-all duration-300">
+                <div
+                    class="absolute -top-4 -right-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                    <span
+                        class="material-symbols-outlined text-[120px] text-primary-container dark:text-primary-container"
+                        style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+                </div>
+                <div>
+                    <span
+                        class="text-xs font-label font-semibold tracking-widest text-slate-500 dark:text-on-surface-variant uppercase">Ofensiva
+                        Atual</span>
+                    <h2 id="stat-streak"
+                        class="font-headline font-black text-5xl md:text-6xl text-primary-container mt-2 italic tracking-tighter">
+                        <span class="animate-pulse">--</span> Dias</h2>
+                </div>
+                <div class="mt-8 flex items-center justify-between z-10">
+                    <div class="flex items-center gap-2 text-primary-container dark:text-tertiary">
+                        <span class="material-symbols-outlined"
+                            style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+                        <span id="stat-best-streak"
+                            class="font-bold font-headline text-xs md:text-sm uppercase tracking-wider">Recorde: --
+                            dias</span>
                     </div>
                     <button onclick="shareStreak()"
-                        class="p-4 bg-white/10 hover:bg-white/20 dark:bg-black/20 dark:hover:bg-black/40 rounded-2xl transition-all duration-300 flex items-center gap-2 group/btn border border-white/10">
-                        <span
-                            class="material-symbols-outlined text-primary text-2xl group-hover/btn:scale-110 transition-transform">share</span>
-                        <span class="text-xs font-black uppercase tracking-widest text-primary hidden sm:block">Compartilhar</span>
+                        class="bg-black/5 dark:glass-card px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-white hover:bg-black/10 dark:hover:bg-surface-bright transition-all border border-black/5 dark:border-white/10">
+                        <span class="material-symbols-outlined text-sm">share</span>
+                        COMPARTILHAR
                     </button>
                 </div>
-                <div>
-                    <p
-                        class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">
-                        Ofensiva Atual</p>
-                    <p id="stat-streak" class="text-4xl font-black tracking-tighter text-black dark:text-white"><span
-                            class="animate-pulse">--</span> Dias</p>
-                    <p id="stat-best-streak" class="text-[10px] font-bold text-primary opacity-80 mt-1 uppercase tracking-wider">
-                        Recorde: -- dias
-                    </p>
-                </div>
             </div>
 
-            <!-- Monthly Total Card (Moved to top) -->
+            <!-- Goal Progress Card -->
             <div
-                class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
-                <div class="flex items-center justify-between">
-                    <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
-                        <span class="material-symbols-outlined text-primary text-4xl">fitness_center</span>
-                    </div>
-                </div>
-                <div>
-                    <p
-                        class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">
-                        Treinos no Mês</p>
-                    <p id="stat-monthly" class="text-4xl font-black tracking-tighter text-black dark:text-white"><span
-                            class="animate-pulse">--</span> Sessões</p>
-                    <p id="stat-monthly-trend" class="text-[10px] font-bold mt-1 uppercase tracking-wider hidden">
-                        -- vs meta
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-            <!-- Left Column: Calendar & Motivation (Spans 2 on LG) -->
-            <div class="lg:col-span-2 space-y-8">
-                <!-- Habit Calendar Section -->
-                <section>
-                    <div class="flex items-center justify-between mb-6">
-                        <h2
-                            class="text-2xl font-black tracking-tight uppercase italic underline decoration-primary decoration-4 underline-offset-8">
-                            Calendário de Hábitos</h2>
-                        <div class="flex items-center gap-2 bg-primary/5 px-2 py-1 rounded-full border border-primary/10">
-                            <button onclick="changeMonth(-1)" class="p-1 hover:bg-primary/20 rounded-full text-primary transition-colors flex items-center justify-center">
-                                <span class="material-symbols-outlined text-xl">chevron_left</span>
-                            </button>
-                            <span id="label-month" class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 min-w-[120px] text-center">---</span>
-                            <button onclick="changeMonth(1)" class="p-1 hover:bg-primary/20 rounded-full text-primary transition-colors flex items-center justify-center">
-                                <span class="material-symbols-outlined text-xl">chevron_right</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-primary/5 dark:bg-primary/10 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden shadow-2xl">
-                        <div class="bg-primary-glow absolute inset-0 pointer-events-none"></div>
-
-                        <!-- Habit Grid -->
-                        <div id="habit-grid" class="grid grid-cols-7 gap-3 relative z-10 sm:max-w-lg mx-auto">
-                            <!-- Weekday Labels -->
-                            <div class="text-xs text-center font-black text-primary/40 uppercase">D</div>
-                            <div class="text-xs text-center font-black text-primary/40 uppercase">S</div>
-                            <div class="text-xs text-center font-black text-primary/40 uppercase">T</div>
-                            <div class="text-xs text-center font-black text-primary/40 uppercase">Q</div>
-                            <div class="text-xs text-center font-black text-primary/40 uppercase">Q</div>
-                            <div class="text-xs text-center font-black text-primary/40 uppercase">S</div>
-                            <div class="text-xs text-center font-black text-primary/40 uppercase">S</div>
-                        </div>
-
-                        <div
-                            class="mt-8 flex items-center justify-center gap-8 text-xs font-black uppercase tracking-[0.2em] relative z-10">
-                            <div class="flex items-center gap-2">
-                                <div class="size-4 rounded-md bg-slate-200 dark:bg-slate-800 border border-white/5">
-                                </div>
-                                <span class="text-slate-500">Sem treino</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-4 rounded-md bg-accent shadow-[0_0_12px_rgba(11,218,135,0.4)]"></div>
-                                <span class="text-accent">Treinado</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Monthly Evolution Chart -->
-                <section class="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-black tracking-tight uppercase italic underline decoration-primary decoration-4 underline-offset-8">
-                            Evolução Mensal</h2>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-primary/60 bg-primary/5 px-4 py-1 rounded-full border border-primary/10">Últimos 12 Meses</span>
-                    </div>
-                    <div class="bg-primary/5 dark:bg-primary/10 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden shadow-2xl h-[300px]">
-                        <div class="bg-primary-glow absolute inset-0 pointer-events-none"></div>
-                        <canvas id="evolution-chart" class="relative z-10"></canvas>
-                    </div>
-                </section>
-
-                <!-- Workout Type Distribution Chart -->
-                <section class="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-black tracking-tight uppercase italic underline decoration-primary decoration-4 underline-offset-8">
-                            Distribuição por Tipo</h2>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-primary/60 bg-primary/5 px-4 py-1 rounded-full border border-primary/10">Este Mês</span>
-                    </div>
-                    <div class="bg-primary/5 dark:bg-primary/10 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden shadow-2xl h-[300px] flex items-center justify-center">
-                        <div class="bg-primary-glow absolute inset-0 pointer-events-none"></div>
-                        <div class="relative z-10 w-full h-full max-w-[250px]">
-                            <canvas id="type-chart"></canvas>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Motivational Banner (On Web it sits below the calendar) -->
-                <section class="hidden lg:block">
-                    <div
-                        class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary to-primary/60 p-10 text-white shadow-2xl shadow-primary/20">
-                        <div class="relative z-10 max-w-lg">
-                            <h3 id="banner-title-web" class="text-3xl font-black mb-4 italic uppercase leading-none">
-                                Você está no caminho!</h3>
-                            <p id="banner-msg-web" class="text-lg font-medium leading-relaxed opacity-95">Sua
-                                consistência é o que define seus resultados. Vamos bater essa meta semanal!</p>
-                        </div>
-                        <span
-                            class="material-symbols-outlined absolute -right-8 -bottom-8 text-[12rem] opacity-20 rotate-12">trending_up</span>
-                    </div>
-                </section>
-            </div>
-
-            <!-- Right Column: Stats & Motivation (On Mobile sits below) -->
-            <div class="space-y-6">
-                <h2 class="text-2xl font-black tracking-tight uppercase italic lg:hidden">Resumo e Meta</h2>
-
-
-                <!-- Weekly Progress Card -->
-                <div
-                    class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
-                    <div class="flex items-center justify-between">
-                        <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-primary text-4xl">calendar_view_week</span>
-                        </div>
-                        <button onclick="toggleGoalEdit()" class="p-2 hover:bg-white/10 rounded-full transition-colors text-primary flex items-center gap-1 group/edit">
-                            <span class="text-[10px] font-black uppercase opacity-0 group-hover/edit:opacity-100 transition-opacity">Editar Meta</span>
-                            <span class="material-symbols-outlined text-lg">edit</span>
-                        </button>
-                    </div>
+                class="bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-8 flex flex-col justify-between relative overflow-hidden group border border-black/5 dark:border-white/5 hover:border-primary-container/40 transition-all duration-300">
+                <div class="flex justify-between items-start">
                     <div>
-                        <p
-                            class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">
-                            Treinos na Semana</p>
-                        <div id="goal-display">
-                            <p id="stat-weekly" class="text-4xl font-black tracking-tighter text-black dark:text-white"><span
-                                    class="animate-pulse">--</span> de --</p>
+                        <span
+                            class="text-xs font-label font-semibold tracking-widest text-slate-500 dark:text-on-surface-variant uppercase">Treinos
+                            na Semana</span>
+                        <div id="goal-display" class="flex items-baseline gap-2 mt-2">
+                            <h2 id="stat-weekly"
+                                class="font-headline font-black text-5xl text-slate-800 dark:text-[#e5e2e1] tracking-tighter">
+                                <span class="animate-pulse">--</span> de --</h2>
                         </div>
-                        <div id="goal-edit" class="hidden mt-4 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                            <select id="goal-input" class="flex-1 bg-black/5 dark:bg-white/10 border border-primary/20 rounded-xl text-lg font-black text-black dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+                        <div id="goal-edit"
+                            class="hidden mt-4 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <select id="goal-input"
+                                class="flex-1 bg-black/5 dark:bg-black/30 border border-primary-container/20 rounded-xl text-lg font-bold text-slate-900 dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary-container outline-none">
                                 <option value="1">1 treino</option>
                                 <option value="2">2 treinos</option>
                                 <option value="3">3 treinos</option>
@@ -273,52 +212,156 @@
                                 <option value="6">6 treinos</option>
                                 <option value="7">7 treinos</option>
                             </select>
-                            <button onclick="saveGoal()" class="bg-primary text-black h-[46px] px-6 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">OK</button>
+                            <button onclick="saveGoal()"
+                                class="bg-primary-container text-white h-[46px] px-6 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-primary-container/20 hover:scale-105 active:scale-95 transition-all">OK</button>
                         </div>
                     </div>
+                    <button onclick="toggleGoalEdit()"
+                        class="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors text-primary-container flex items-center gap-1 group/edit">
+                        <span
+                            class="text-[10px] font-black uppercase opacity-0 group-hover/edit:opacity-100 transition-opacity">Editar</span>
+                        <span class="material-symbols-outlined text-lg">edit</span>
+                    </button>
                 </div>
 
-
-                <!-- Motivational Banner (Mobile Only) -->
-                <div
-                    class="lg:hidden relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary to-primary/60 p-8 text-white shadow-xl">
-                    <div class="relative z-10">
-                        <h3 id="banner-title-mobile" class="text-xl font-black mb-2 italic uppercase">Foco no Objetivo!
-                        </h3>
-                        <p id="banner-msg-mobile" class="text-sm font-medium leading-relaxed opacity-90">Carregando sua
-                            meta...</p>
+                <div class="mt-8 space-y-3">
+                    <div class="flex justify-between text-xs font-bold font-label uppercase">
+                        <span id="stat-monthly" class="text-primary-container dark:text-tertiary">-- Treinos no
+                            Mês</span>
                     </div>
-                    <span
-                        class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl opacity-20 rotate-12">trending_up</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Habit Tracker Section -->
+        <section
+            class="bg-white dark:bg-surface-container-low shadow-lg dark:shadow-none rounded-xl p-8 border border-black/5 dark:border-white/5">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="font-headline font-bold text-lg md:text-xl uppercase tracking-tighter">Frequência Semanal
+                </h3>
+                <div
+                    class="flex gap-2 items-center bg-black/5 dark:bg-black/20 px-2 py-1 rounded-full border border-black/5 dark:border-white/5">
+                    <button onclick="changeMonth(-1)"
+                        class="p-1 text-slate-500 dark:text-slate-400 hover:text-primary-container transition-colors"><span
+                            class="material-symbols-outlined text-xl">chevron_left</span></button>
+                    <span id="label-month"
+                        class="font-headline font-bold uppercase text-xs md:text-sm tracking-widest text-slate-700 dark:text-slate-300 min-w-[120px] text-center">---</span>
+                    <button onclick="changeMonth(1)"
+                        class="p-1 text-slate-500 dark:text-slate-400 hover:text-primary-container transition-colors"><span
+                            class="material-symbols-outlined text-xl">chevron_right</span></button>
                 </div>
             </div>
 
-        </div>
+            <div id="habit-grid" class="grid grid-cols-7 gap-2 md:gap-3">
+                <!-- Header Days -->
+                <div
+                    class="text-center text-[10px] sm:text-xs font-bold opacity-40 font-label tracking-tighter sm:tracking-normal">
+                    DOM</div>
+                <div
+                    class="text-center text-[10px] sm:text-xs font-bold opacity-40 font-label tracking-tighter sm:tracking-normal">
+                    SEG</div>
+                <div
+                    class="text-center text-[10px] sm:text-xs font-bold opacity-40 font-label tracking-tighter sm:tracking-normal">
+                    TER</div>
+                <div
+                    class="text-center text-[10px] sm:text-xs font-bold opacity-40 font-label tracking-tighter sm:tracking-normal">
+                    QUA</div>
+                <div
+                    class="text-center text-[10px] sm:text-xs font-bold opacity-40 font-label tracking-tighter sm:tracking-normal">
+                    QUI</div>
+                <div
+                    class="text-center text-[10px] sm:text-xs font-bold opacity-40 font-label tracking-tighter sm:tracking-normal">
+                    SEX</div>
+                <div
+                    class="text-center text-[10px] sm:text-xs font-bold opacity-40 font-label tracking-tighter sm:tracking-normal">
+                    SÁB</div>
+                <!-- Calendar grid inserted here by JS -->
+            </div>
+
+            <div
+                class="mt-8 flex items-center justify-center gap-8 text-[10px] md:text-xs font-bold font-label uppercase tracking-widest relative z-10">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="size-4 rounded-md bg-black/5 dark:bg-surface-container-highest border border-black/10 dark:border-white/5">
+                    </div>
+                    <span class="text-slate-500 dark:text-slate-400">Sem treino</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div
+                        class="size-4 rounded-md bg-primary-container dark:bg-tertiary shadow-[0_0_10px_rgba(255,95,0,0.4)] dark:shadow-[0_0_10px_rgba(171,214,0,0.4)]">
+                    </div>
+                    <span class="text-primary-container dark:text-tertiary">Treinado</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section class="grid grid-cols-1 md:grid-cols-5 gap-6">
+            <!-- Monthly Evolution (Chart.js) -->
+            <div
+                class="md:col-span-3 bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-8 border border-black/5 dark:border-white/5 h-[320px] flex flex-col">
+                <h3 class="font-headline font-bold text-lg uppercase tracking-tighter mb-4">Evolução Mensal</h3>
+                <div class="flex-grow w-full relative">
+                    <canvas id="evolution-chart" class="absolute inset-0 z-10"></canvas>
+                </div>
+            </div>
+
+            <!-- Type Distribution (Chart.js) -->
+            <div
+                class="md:col-span-2 bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-8 flex flex-col items-center border border-black/5 dark:border-white/5 h-[320px]">
+                <h3 class="font-headline font-bold text-lg uppercase tracking-tighter mb-4 w-full text-center">Tipo de
+                    Treino</h3>
+                <div class="relative w-full h-full max-h-[220px] flex items-center justify-center">
+                    <canvas id="type-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Motivational Banner -->
+        <section class="mb-4">
+            <div class="relative overflow-hidden rounded-[2rem] kinetic-gradient p-8 text-white shadow-xl">
+                <div class="relative z-10">
+                    <h3 id="banner-title-web"
+                        class="text-2xl font-headline font-black mb-2 italic uppercase tracking-tighter">Foco no
+                        Objetivo!</h3>
+                    <p id="banner-msg-web"
+                        class="text-sm md:text-base font-medium leading-relaxed opacity-90 font-body">Carregando sua
+                        meta...</p>
+                </div>
+                <span
+                    class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl md:text-9xl opacity-20 rotate-12">trending_up</span>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Bottom Navigation Bar (Responsive) -->
+    <!-- BottomNavBar -->
     <nav
-        class="fixed bottom-0 left-0 right-0 z-40 border-t border-primary/10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-xl px-4 pb-8 pt-4">
-        <div class="max-w-2xl mx-auto flex items-center justify-around">
-            <a class="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-primary transition-all duration-300 group"
-                href="treinos.html">
-                <span
-                    class="material-symbols-outlined text-3xl group-hover:scale-110 group-active:scale-95 transition-transform">pool</span>
-                <p class="text-[10px] font-black uppercase tracking-widest">Treino</p>
-            </a>
-            <a class="flex flex-col items-center gap-2 text-primary scale-110" href="estatisticas.html">
-                <span class="material-symbols-outlined text-3xl fill-[1]">bar_chart</span>
-                <p class="text-[10px] font-black uppercase tracking-widest">Estatísticas</p>
-            </a>
-            <a class="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-primary transition-all duration-300 group"
-                href="#" onclick="logout()">
-                <span
-                    class="material-symbols-outlined text-3xl group-hover:scale-110 group-active:scale-95 transition-transform">logout</span>
-                <p class="text-[10px] font-black uppercase tracking-widest">Sair</p>
-            </a>
-        </div>
+        class="fixed bottom-0 left-0 w-full h-[88px] flex justify-around items-center px-4 pb-4 pt-2 bg-white/95 dark:bg-[#1c1b1b]/95 backdrop-blur-lg z-50 rounded-t-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.5)] border-t border-black/5 dark:border-white/5">
+        <a class="flex flex-col items-center justify-center text-slate-500 dark:text-[#e5e2e1] opacity-60 dark:opacity-40 px-5 py-2 hover:opacity-100 transition-all duration-300 active:scale-90 duration-150 ease-out"
+            href="treinos.html">
+            <span class="material-symbols-outlined">pool</span>
+            <span class="font-label font-semibold text-[10px] uppercase tracking-widest mt-1">Treinos</span>
+        </a>
+        <a class="flex flex-col items-center justify-center bg-black/5 dark:bg-[#2a2a2a] text-primary-container rounded-xl px-5 py-2 scale-110 shadow-lg dark:shadow-[0_0_15px_rgba(255,95,0,0.2)] active:scale-90 duration-150 ease-out"
+            href="estatisticas.html">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+            <span class="font-label font-bold text-[10px] uppercase tracking-widest mt-1">Estatísticas</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-slate-500 dark:text-[#e5e2e1] opacity-60 dark:opacity-40 px-5 py-2 hover:opacity-100 transition-all duration-300 active:scale-90 duration-150 ease-out"
+            href="#" onclick="logout()">
+            <span class="material-symbols-outlined">logout</span>
+            <span class="font-label font-semibold text-[10px] uppercase tracking-widest mt-1">Sair</span>
+        </a>
     </nav>
 
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed bottom-28 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl bg-black/90 dark:bg-white/90 text-white dark:text-black text-sm font-bold shadow-2xl opacity-0 translate-y-4 pointer-events-none transition-all duration-300 backdrop-blur-md border border-white/10 dark:border-black/10">
+        Mensagem copiada! 🔥
+    </div>
+
+    <!-- MAIN SCRIPT -->
     <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbwnj6G5k-AxCVeWng252LJJhGgVm551llXwT3JiiZil3l_KTo-1vczNdnec9xnWFeFADQ/exec';
         const userCpf = localStorage.getItem('user_cpf');
@@ -329,6 +372,9 @@
 
         let currentCalendarDate = new Date();
         let allTrainedDays = [];
+        let currentStats = null;
+        let evolutionChart = null;
+        let typeChart = null;
 
         document.addEventListener('DOMContentLoaded', fetchStats);
 
@@ -364,21 +410,15 @@
         }
 
         function updateUI(data) {
-            document.getElementById('stat-streak').innerText = `${data.streak} Dias`;
+            document.getElementById('stat-streak').innerHTML = `<span class="animate-pulse">${data.streak}</span> Dias`;
             document.getElementById('stat-best-streak').innerText = `Recorde: ${data.bestStreak || 0} dias`;
-            document.getElementById('stat-weekly').innerHTML = `${data.weeklyTotal} <span class="text-2xl opacity-60 text-slate-400">de ${data.weeklyGoal}</span>`;
-            document.getElementById('stat-monthly').innerHTML = `${data.monthlyTotal} <span class="text-2xl opacity-60">Sessões</span>`;
-            
+            document.getElementById('stat-weekly').innerHTML = `${data.weeklyTotal} <span class="text-xl md:text-2xl opacity-60 text-slate-400">de ${data.weeklyGoal}</span>`;
+
             // Contexto Mensal (Comparativo com Meta)
-            const monthlyTarget = (data.weeklyGoal || 0) * 4;
-            const trendEl = document.getElementById('stat-monthly-trend');
-            if (trendEl && data.monthlyTotal !== undefined) {
-                const statusColor = data.monthlyTotal >= monthlyTarget ? 'text-primary' : 'text-orange-500';
-                trendEl.innerText = `${data.monthlyTotal} / ${monthlyTarget} Sessões (Meta Mensal)`;
-                trendEl.className = `text-[10px] font-bold mt-1 uppercase tracking-wider ${statusColor}`;
-                trendEl.classList.remove('hidden');
-            }
-            document.getElementById('label-month').innerText = `${data.monthName} ${new Date().getFullYear()}`;
+            document.getElementById('stat-monthly').innerText = `${data.monthlyTotal} Sessões no Mês`;
+
+            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            document.getElementById('label-month').innerText = `${monthNames[currentCalendarDate.getMonth()]} ${currentCalendarDate.getFullYear()}`;
 
             const isWeeklyGoalMet = data.weeklyTotal >= data.weeklyGoal;
             const msg = isWeeklyGoalMet
@@ -391,19 +431,15 @@
                 document.getElementById('banner-msg-web').innerText = msg;
                 document.getElementById('banner-title-web').innerText = title;
             }
-            if (document.getElementById('banner-msg-mobile')) {
-                document.getElementById('banner-msg-mobile').innerText = msg;
-                document.getElementById('banner-title-mobile').innerText = title;
-            }
 
             if (data.typeDistribution && data.typeDistribution.length > 0) {
                 renderTypeChart(data.typeDistribution);
             } else {
                 // Mock data para visualização inicial
                 renderTypeChart([
-                    {label: 'A', value: 4},
-                    {label: 'B', value: 3},
-                    {label: 'C', value: 2}
+                    { label: 'A', value: 4 },
+                    { label: 'B', value: 3 },
+                    { label: 'C', value: 2 }
                 ]);
             }
 
@@ -417,22 +453,16 @@
             renderCalendar(allTrainedDays);
         }
 
-        let evolutionChart = null;
-        let typeChart = null;
-
         function renderEvolutionChart(monthlyData) {
             const ctx = document.getElementById('evolution-chart').getContext('2d');
-            
-            if (evolutionChart) {
-                evolutionChart.destroy();
-            }
+            if (evolutionChart) evolutionChart.destroy();
 
             const labels = monthlyData.map(m => m.label);
             const values = monthlyData.map(m => m.value);
 
             const isDark = document.documentElement.classList.contains('dark');
-            const textColor = isDark ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)';
-            const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+            const primaryColor = isDark ? '#abd600' : '#ff5f00';
+            const hoverColor = isDark ? '#ffb599' : '#a63b00';
 
             evolutionChart = new Chart(ctx, {
                 type: 'bar',
@@ -441,10 +471,10 @@
                     datasets: [{
                         label: 'Treinos',
                         data: values,
-                        backgroundColor: '#0BDA87',
-                        borderRadius: 6,
+                        backgroundColor: primaryColor,
+                        borderRadius: 8,
                         borderSkipped: false,
-                        hoverBackgroundColor: '#ec5b13',
+                        hoverBackgroundColor: hoverColor,
                     }]
                 },
                 options: {
@@ -454,26 +484,28 @@
                         legend: { display: false },
                         tooltip: {
                             enabled: true,
-                            backgroundColor: '#1a1a1a',
-                            titleFont: { size: 14, weight: 'bold' },
-                            bodyFont: { size: 16, weight: 'bold' },
+                            backgroundColor: isDark ? '#353534' : '#131313',
+                            titleFont: { size: 14, weight: 'bold', family: 'Inter' },
+                            bodyFont: { size: 16, weight: 'bold', family: 'Inter' },
                             displayColors: false,
+                            cornerRadius: 12,
+                            padding: 12
                         }
                     },
                     scales: {
                         x: {
                             grid: { display: false },
                             ticks: {
-                                color: isDark ? '#fff' : '#000',
-                                font: { weight: 'bold', size: 11 }
+                                color: isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)',
+                                font: { weight: 'bold', size: 11, family: 'Lexend' }
                             }
                         },
                         y: {
                             beginAtZero: true,
-                            grid: { color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' },
+                            grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
                             ticks: {
-                                color: isDark ? '#fff' : '#000',
-                                font: { weight: 'bold', size: 11 },
+                                color: isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)',
+                                font: { weight: 'bold', size: 11, family: 'Inter' },
                                 stepSize: 5
                             }
                         }
@@ -486,21 +518,14 @@
             const canvas = document.getElementById('type-chart');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            
-            if (typeChart) {
-                typeChart.destroy();
-            }
+            if (typeChart) typeChart.destroy();
 
             const labels = typeDistribution.map(d => `Treino ${d.label}`);
             const values = typeDistribution.map(d => d.value);
             const isDark = document.documentElement.classList.contains('dark');
 
             const colors = [
-                '#0BDA87', // Verde Principal
-                '#ec5b13', // Laranja Sotaque
-                '#3b82f6', // Azul
-                '#8b5cf6', // Violeta
-                '#f59e0b', // Amarelo/Âmbar
+                '#ff5f00', '#abd600', '#ffb599', '#3b82f6', '#8b5cf6'
             ];
 
             typeChart = new Chart(ctx, {
@@ -517,25 +542,26 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '70%',
+                    cutout: '75%',
                     plugins: {
                         legend: {
                             position: 'bottom',
                             labels: {
-                                color: isDark ? '#fff' : '#000',
-                                font: { weight: 'bold', size: 10 },
+                                color: isDark ? '#e5e2e1' : '#1c1b1b',
+                                font: { weight: 'bold', size: 11, family: 'Inter' },
                                 padding: 20,
                                 usePointStyle: true,
                             }
                         },
                         tooltip: {
-                            backgroundColor: '#1a1a1a',
-                            titleFont: { size: 14, weight: 'bold' },
-                            bodyFont: { size: 16, weight: 'bold' },
+                            backgroundColor: isDark ? '#353534' : '#131313',
+                            titleFont: { size: 14, weight: 'bold', family: 'Inter' },
+                            bodyFont: { size: 16, weight: 'bold', family: 'Inter' },
                             padding: 12,
                             displayColors: true,
+                            cornerRadius: 12,
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     const label = context.label || '';
                                     const value = context.parsed || 0;
                                     const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -553,24 +579,24 @@
             const grid = document.getElementById('habit-grid');
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
-            
-            // Limpar apenas os dias (mantendo as labels dos dias da semana)
-            const daysEls = grid.querySelectorAll('.aspect-square');
-            daysEls.forEach(el => el.remove());
+
+            // Limpar apenas os dias, manter o cabeçalho
+            const headers = Array.from(grid.children).slice(0, 7);
+            grid.innerHTML = '';
+            headers.forEach(h => grid.appendChild(h));
 
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Atualizar Label do Mês
             const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             document.getElementById('label-month').innerText = `${monthNames[month]} ${year}`;
 
-            // Mapa para busca rápida
             const trainedMap = {};
             trainedDays.forEach(item => {
                 trainedMap[item.date] = item.type;
             });
 
+            // Dia da semana de 0 (Dom) a 6 (Sab)
             for (let i = 0; i < firstDay; i++) {
                 grid.appendChild(createDot(null, false, ""));
             }
@@ -588,19 +614,34 @@
         function createDot(workoutType, isToday, dateLabel) {
             const dot = document.createElement('div');
             const hasTrained = !!workoutType;
-            dot.className = `aspect-square rounded-md transition-all duration-700 flex items-center justify-center text-[10px] font-black hover:scale-110 active:scale-95 cursor-default ${hasTrained
-                    ? 'bg-accent shadow-[0_0_12px_rgba(11,218,135,0.4)] border border-accent/20 text-white'
-                    : 'bg-slate-200 dark:bg-slate-800 border border-white/5 text-transparent'
-                }`;
-            dot.innerText = workoutType || '';
-            
-            // Tooltip nativo
+            const isDark = document.documentElement.classList.contains('dark');
+
+            if (workoutType === null && !dateLabel && !isToday) {
+                dot.className = `aspect-square rounded-lg bg-transparent`;
+                return dot;
+            }
+
+            if (hasTrained) {
+                dot.className = `aspect-square rounded-lg transition-all duration-300 flex items-center justify-center font-headline font-bold text-xs sm:text-sm hover:scale-110 active:scale-95 cursor-default
+                    ${isDark ? 'bg-tertiary shadow-[0_0_10px_rgba(171,214,0,0.2)] text-[#161e00]' : 'bg-primary-container shadow-[0_0_10px_rgba(255,95,0,0.4)] text-white'}`;
+            } else {
+                dot.className = `aspect-square rounded-lg transition-all duration-300 flex items-center justify-center font-headline font-bold text-xs sm:text-sm cursor-default
+                    ${isDark ? 'bg-surface-container-high opacity-40 hover:opacity-100 text-[#e5e2e1]' : 'bg-black/5 opacity-60 hover:opacity-100 text-slate-800'}`;
+            }
+
+            dot.innerText = workoutType || (dateLabel ? dateLabel.split('/')[0] : '');
+
             if (dateLabel) {
                 dot.title = hasTrained ? `${dateLabel} - Treino ${workoutType}` : dateLabel;
             }
 
             if (isToday) {
-                dot.classList.add('ring-2', 'ring-primary', 'ring-offset-4', 'ring-offset-background-dark', 'scale-110');
+                dot.classList.add('border-2');
+                if (isDark) {
+                    dot.classList.add('border-primary', 'text-primary');
+                } else {
+                    dot.classList.add('border-primary-container', 'text-primary-container');
+                }
             }
             return dot;
         }
@@ -609,8 +650,6 @@
             localStorage.removeItem('user_cpf');
             window.location.href = 'index.html';
         }
-
-        let currentStats = null;
 
         function toggleGoalEdit() {
             const display = document.getElementById('goal-display');
@@ -630,9 +669,9 @@
         async function saveGoal() {
             const newGoal = document.getElementById('goal-input').value;
             const overlay = document.getElementById('loading-overlay');
-            
+
             overlay.classList.remove('hidden');
-            
+
             try {
                 const payload = {
                     action: 'updateGoal',
@@ -647,7 +686,7 @@
 
                 if (response.ok) {
                     toggleGoalEdit();
-                    fetchStats(); // Recarregar estatísticas para atualizar UI
+                    fetchStats();
                 } else {
                     alert('Erro ao atualizar meta.');
                 }
@@ -662,7 +701,7 @@
         async function shareStreak() {
             const streak = (currentStats && currentStats.streak) || 0;
             const text = `🔥 Minha ofensiva é de ${streak} dias consecutivos no TreinoSimples! Trace seu caminho para o topo! 🚀`;
-            
+
             if (navigator.share) {
                 try {
                     await navigator.share({
@@ -713,17 +752,22 @@
 
         updateThemeIcons();
 
-        themeToggleBtn.addEventListener('click', function() {
+        themeToggleBtn.addEventListener('click', function () {
             document.documentElement.classList.toggle('dark');
             const isDark = document.documentElement.classList.contains('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             updateThemeIcons();
+
+            // update charts to re-render in new theme
+            if (currentStats) {
+                if (evolutionChart && currentStats.monthlyTotal !== undefined) {
+                    // trigger a fetch or re-render
+                    fetchStats();
+                    // Or we could just re-render: renderEvolutionChart gets the history internally through separate request
+                }
+            }
         });
     </script>
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl bg-slate-900/90 text-white text-sm font-bold shadow-2xl opacity-0 translate-y-4 pointer-events-none transition-all duration-300 backdrop-blur-md border border-white/10">
-        Mensagem copiada! 🔥
-    </div>
 </body>
 
 </html>

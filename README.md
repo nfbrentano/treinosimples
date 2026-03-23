@@ -6,7 +6,7 @@ Este projeto utiliza um modelo de **Histórico Centralizado**, garantindo que o 
 
 1.  **Abra sua Planilha**: Vá ao Google Sheets e certifique-se de que os CPFs dos alunos sejam os nomes das abas.
 2.  **Extensões**: No menu superior, clique em **Extensões > Apps Script**.
-3.  **Colar o Código**: Apague tudo no editor e cole o conteúdo de [workout_api.gs](file:///Users/natanaelbrentano/treinosimples/workout_api.gs).
+3.  **Colar o Código**: Apague tudo no editor e cole o conteúdo de workout_api.gs.
 4.  **Implantar**:
     *   Clique em **Implantar > Nova implantação**.
     *   Tipo: **App da Web**.

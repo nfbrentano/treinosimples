@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Estatísticas - Elite Fitness</title>
+    <title>Estatísticas - JustForge</title>
     <!-- Dark Mode initialization -->
     <script>
         const theme = localStorage.getItem('theme');
@@ -144,7 +144,7 @@
             <span class="material-symbols-outlined">arrow_back</span>
         </button>
         <div class="text-fitness-primary font-headline font-black italic text-2xl tracking-tighter">
-            Elite <span class="text-slate-900 dark:text-[#e5e2e1]">Fitness</span>
+            Just<span class="text-slate-900 dark:text-[#e5e2e1]">Forge</span>
         </div>
         <button id="theme-toggle" type="button"
             class="size-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
@@ -702,12 +702,12 @@
 
         async function shareStreak() {
             const streak = (currentStats && currentStats.streak) || 0;
-            const text = `🔥 Minha ofensiva é de ${streak} dias consecutivos no TreinoSimples! Trace seu caminho para o topo! 🚀`;
+            const text = `🔥 Minha ofensiva é de ${streak} dias consecutivos no JustForge! Trace seu caminho para o topo! 🚀`;
 
             if (navigator.share) {
                 try {
                     await navigator.share({
-                        title: 'TreinoSimples - Ofensiva',
+                        title: 'JustForge - Ofensiva',
                         text: text,
                         url: 'https://nfbrentano.github.io/treinosimples/'
                     });

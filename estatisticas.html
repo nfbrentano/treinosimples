@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Estatísticas - Fitness App</title>
+    <title>Estatísticas - Elite Fitness</title>
     <!-- Dark Mode initialization -->
     <script>
         const theme = localStorage.getItem('theme');
@@ -28,52 +28,54 @@
             theme: {
                 extend: {
                     colors: {
+                        "fitness-primary": "#CCFF00",
+                        "fitness-dark": "#0A0A0A",
                         "on-surface-variant": "#e4bfb1",
                         "secondary-fixed-dim": "#c8c6c5",
                         "surface-container-high": "#2a2a2a",
-                        "primary-fixed-dim": "#ffb599",
+                        "primary-fixed-dim": "#CCFF00",
                         "outline": "#ab8a7d",
-                        "tertiary-fixed-dim": "#abd600",
-                        "on-primary": "#5a1c00",
+                        "tertiary-fixed-dim": "#CCFF00",
+                        "on-primary": "#0A0A0A",
                         "secondary-container": "#4a4949",
                         "on-secondary-fixed-variant": "#474646",
                         "surface": "#131313",
                         "secondary-fixed": "#e5e2e1",
                         "surface-container": "#201f1f",
-                        "tertiary-fixed": "#c3f400",
-                        "on-tertiary-fixed": "#161e00",
+                        "tertiary-fixed": "#CCFF00",
+                        "on-tertiary-fixed": "#0A0A0A",
                         "surface-container-lowest": "#0e0e0e",
                         "on-surface": "#e5e2e1",
                         "surface-container-highest": "#353534",
                         "on-secondary-fixed": "#1c1b1b",
                         "surface-container-low": "#1c1b1b",
-                        "on-primary-fixed": "#370e00",
+                        "on-primary-fixed": "#0A0A0A",
                         "inverse-surface": "#e5e2e1",
                         "on-background": "#e5e2e1",
-                        "inverse-primary": "#a63b00",
+                        "inverse-primary": "#CCFF00",
                         "secondary": "#c8c6c5",
-                        "on-tertiary-container": "#253000",
+                        "on-tertiary-container": "#0A0A0A",
                         "error-container": "#93000a",
-                        "primary": "#ffb599",
-                        "on-tertiary-fixed-variant": "#3c4d00",
-                        "primary-fixed": "#ffdbce",
+                        "primary": "#CCFF00",
+                        "on-tertiary-fixed-variant": "#0A0A0A",
+                        "primary-fixed": "#CCFF00",
                         "on-error-container": "#ffdad6",
-                        "primary-container": "#ff5f00",
+                        "primary-container": "#CCFF00",
                         "outline-variant": "#5b4137",
                         "background": "#131313",
                         "on-error": "#690005",
                         "inverse-on-surface": "#313030",
                         "surface-variant": "#353534",
-                        "tertiary-container": "#7e9f00",
-                        "on-tertiary": "#283500",
+                        "tertiary-container": "#CCFF00",
+                        "on-tertiary": "#0A0A0A",
                         "on-secondary": "#313030",
-                        "on-primary-fixed-variant": "#7f2b00",
-                        "on-primary-container": "#531a00",
+                        "on-primary-fixed-variant": "#0A0A0A",
+                        "on-primary-container": "#0A0A0A",
                         "error": "#ffb4ab",
                         "on-secondary-container": "#bab8b7",
-                        "tertiary": "#abd600",
+                        "tertiary": "#CCFF00",
                         "surface-dim": "#131313",
-                        "surface-tint": "#ffb599",
+                        "surface-tint": "#CCFF00",
                         "surface-bright": "#3a3939"
                     },
                     fontFamily: {
@@ -93,7 +95,7 @@
         }
 
         .kinetic-gradient {
-            background: linear-gradient(135deg, #ffb599 0%, #ff5f00 100%);
+            background: linear-gradient(135deg, #CCFF00 0%, #99CC00 100%);
         }
 
         .glass-card {
@@ -136,27 +138,27 @@
 
     <!-- TopAppBar -->
     <header
-        class="fixed top-0 w-full z-50 bg-[#f8f6f6]/80 dark:bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-6 py-4 border-b border-black/5 dark:border-white/5 shadow-sm dark:shadow-none transition-colors duration-300">
+        class="fixed top-0 w-full z-50 bg-[#f8f6f6]/80 dark:bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 border-b border-black/5 dark:border-white/5 shadow-sm dark:shadow-none transition-colors duration-300">
         <button onclick="window.location.href='treinos.html'"
             class="text-slate-900 dark:text-[#e5e2e1] flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
             <span class="material-symbols-outlined">arrow_back</span>
         </button>
-        <div class="text-[#ff5f00] font-headline font-black italic text-2xl tracking-tighter">
-            TreinouSimples
+        <div class="text-fitness-primary font-headline font-black italic text-2xl tracking-tighter">
+            Elite <span class="text-slate-900 dark:text-[#e5e2e1]">Fitness</span>
         </div>
-        <button id="theme-toggle"
+        <button id="theme-toggle" type="button"
             class="size-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
-            <span id="theme-toggle-dark-icon" class="material-symbols-outlined text-[#ff5f00] hidden">dark_mode</span>
-            <span id="theme-toggle-light-icon" class="material-symbols-outlined text-[#ff5f00] hidden">light_mode</span>
+            <span id="theme-toggle-dark-icon" class="material-symbols-outlined text-fitness-primary hidden">dark_mode</span>
+            <span id="theme-toggle-light-icon" class="material-symbols-outlined text-fitness-primary hidden">light_mode</span>
         </button>
     </header>
 
-    <main class="pt-24 px-6 max-w-4xl mx-auto space-y-8 flex-grow w-full">
+    <main class="pt-20 sm:pt-24 px-4 sm:px-6 max-w-4xl mx-auto space-y-6 sm:space-y-8 flex-grow w-full">
         <!-- Dashboard Summary Section -->
         <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Streak Card -->
             <div
-                class="bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-8 flex flex-col justify-between relative overflow-hidden group border border-black/5 dark:border-white/5 hover:border-primary-container/40 transition-all duration-300">
+                class="bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border border-black/5 dark:border-white/5 hover:border-primary-container/40 transition-all duration-300">
                 <div
                     class="absolute -top-4 -right-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
                     <span
@@ -189,7 +191,7 @@
 
             <!-- Goal Progress Card -->
             <div
-                class="bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-8 flex flex-col justify-between relative overflow-hidden group border border-black/5 dark:border-white/5 hover:border-primary-container/40 transition-all duration-300">
+                class="bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border border-black/5 dark:border-white/5 hover:border-primary-container/40 transition-all duration-300">
                 <div class="flex justify-between items-start">
                     <div>
                         <span
@@ -235,7 +237,7 @@
 
         <!-- Habit Tracker Section -->
         <section
-            class="bg-white dark:bg-surface-container-low shadow-lg dark:shadow-none rounded-xl p-8 border border-black/5 dark:border-white/5">
+            class="bg-white dark:bg-surface-container-low shadow-lg dark:shadow-none rounded-xl p-6 sm:p-8 border border-black/5 dark:border-white/5">
             <div class="flex justify-between items-center mb-8">
                 <h3 class="font-headline font-bold text-lg md:text-xl uppercase tracking-tighter">Frequência Semanal
                 </h3>
@@ -252,7 +254,7 @@
                 </div>
             </div>
 
-            <div id="habit-grid" class="grid grid-cols-7 gap-2 md:gap-3">
+            <div id="habit-grid" class="grid grid-cols-7 gap-1 sm:gap-2 md:gap-3">
                 <!-- Header Days -->
                 <div
                     class="text-center text-[10px] sm:text-xs font-bold opacity-40 font-label tracking-tighter sm:tracking-normal">
@@ -299,7 +301,7 @@
         <section class="grid grid-cols-1 md:grid-cols-5 gap-6">
             <!-- Monthly Evolution (Chart.js) -->
             <div
-                class="md:col-span-3 bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-8 border border-black/5 dark:border-white/5 h-[320px] flex flex-col">
+                class="md:col-span-3 bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-6 sm:p-8 border border-black/5 dark:border-white/5 h-[300px] sm:h-[320px] flex flex-col">
                 <h3 class="font-headline font-bold text-lg uppercase tracking-tighter mb-4">Evolução Mensal</h3>
                 <div class="flex-grow w-full relative">
                     <canvas id="evolution-chart" class="absolute inset-0 z-10"></canvas>
@@ -308,7 +310,7 @@
 
             <!-- Type Distribution (Chart.js) -->
             <div
-                class="md:col-span-2 bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-8 flex flex-col items-center border border-black/5 dark:border-white/5 h-[320px]">
+                class="md:col-span-2 bg-white dark:bg-surface-container-high shadow-lg dark:shadow-none rounded-xl p-6 sm:p-8 flex flex-col items-center border border-black/5 dark:border-white/5 h-[300px] sm:h-[320px]">
                 <h3 class="font-headline font-bold text-lg uppercase tracking-tighter mb-4 w-full text-center">Tipo de
                     Treino</h3>
                 <div class="relative w-full h-full max-h-[220px] flex items-center justify-center">
@@ -319,7 +321,7 @@
 
         <!-- Motivational Banner -->
         <section class="mb-4">
-            <div class="relative overflow-hidden rounded-[2rem] kinetic-gradient p-8 text-white shadow-xl">
+            <div class="relative overflow-hidden rounded-[2rem] kinetic-gradient p-6 sm:p-8 text-white shadow-xl">
                 <div class="relative z-10">
                     <h3 id="banner-title-web"
                         class="text-2xl font-headline font-black mb-2 italic uppercase tracking-tighter">Foco no
@@ -337,7 +339,7 @@
 
     <!-- BottomNavBar -->
     <nav
-        class="fixed bottom-0 left-0 w-full h-[88px] flex justify-around items-center px-4 pb-4 pt-2 bg-white/95 dark:bg-[#1c1b1b]/95 backdrop-blur-lg z-50 rounded-t-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.5)] border-t border-black/5 dark:border-white/5">
+        class="fixed bottom-0 sm:bottom-4 left-0 sm:left-4 right-0 sm:right-4 h-[72px] sm:h-[88px] flex justify-around items-center px-4 pb-2 sm:pb-4 pt-2 bg-white/95 dark:bg-[#1c1b1b]/95 backdrop-blur-lg z-50 rounded-t-[24px] sm:rounded-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.5)] border-t sm:border border-black/5 dark:border-white/5">
         <a class="flex flex-col items-center justify-center text-slate-500 dark:text-[#e5e2e1] opacity-60 dark:opacity-40 px-5 py-2 hover:opacity-100 transition-all duration-300 active:scale-90 duration-150 ease-out"
             href="treinos.html">
             <span class="material-symbols-outlined">pool</span>
@@ -461,8 +463,8 @@
             const values = monthlyData.map(m => m.value);
 
             const isDark = document.documentElement.classList.contains('dark');
-            const primaryColor = isDark ? '#abd600' : '#ff5f00';
-            const hoverColor = isDark ? '#ffb599' : '#a63b00';
+            const primaryColor = '#CCFF00';
+            const hoverColor = '#99CC00';
 
             evolutionChart = new Chart(ctx, {
                 type: 'bar',
@@ -525,7 +527,7 @@
             const isDark = document.documentElement.classList.contains('dark');
 
             const colors = [
-                '#ff5f00', '#abd600', '#ffb599', '#3b82f6', '#8b5cf6'
+                '#CCFF00', '#99CC00', '#669900', '#336600', '#113300'
             ];
 
             typeChart = new Chart(ctx, {
@@ -758,13 +760,16 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             updateThemeIcons();
 
-            // update charts to re-render in new theme
+            // update charts to re-render in new theme WITHOUT fetching again
             if (currentStats) {
-                if (evolutionChart && currentStats.monthlyTotal !== undefined) {
-                    // trigger a fetch or re-render
-                    fetchStats();
-                    // Or we could just re-render: renderEvolutionChart gets the history internally through separate request
+                if (evolutionChart && currentStats.monthlyEvolution) {
+                    renderEvolutionChart(currentStats.monthlyEvolution);
                 }
+                if (typeChart && currentStats.typeDistribution) {
+                    renderTypeChart(currentStats.typeDistribution);
+                }
+                // Refresh calendar to update day colors
+                renderCalendar(allTrainedDays);
             }
         });
     </script>

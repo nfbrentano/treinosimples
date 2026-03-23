@@ -33,6 +33,12 @@ function doGet(e) {
       return jsonResponse(getStudentStats(cpf, ss, sheet));
     }
 
+    // Se a ação for histórico mensal
+    if (action === 'getMonthlyHistory') {
+      const stats = getStudentStats(cpf, ss, sheet);
+      return jsonResponse({ monthlyEvolution: stats.monthlyEvolution });
+    }
+
     // Comportamento padrão: Retornar exercícios do dia
     return getStudentWorkouts(cpf, ss, sheet);
 
@@ -147,6 +153,18 @@ function getStudentStats(cpf, ss, sheet) {
   const calendarData = [];
   let weeklyTotal = 0;
   
+  // Preparar evolução mensal (últimos 12 meses)
+  const monthlyEvolution = [];
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    monthlyEvolution.push({
+      label: getMonthName(d.getMonth()).substring(0, 3) + "/" + (d.getFullYear() % 100),
+      month: d.getMonth(),
+      year: d.getFullYear(),
+      value: 0
+    });
+  }
+  
   // Calcula o início da semana atual (Domingo)
   const sunday = new Date(now);
   const dayOfWeek = sunday.getDay(); // 0 (Dom) a 6 (Sab)
@@ -171,6 +189,13 @@ function getStudentStats(cpf, ss, sheet) {
     if (d >= sunday) {
       weeklyTotal++;
     }
+
+    // Incrementar evolução mensal
+    monthlyEvolution.forEach(m => {
+      if (d.getMonth() === m.month && d.getFullYear() === m.year) {
+        m.value++;
+      }
+    });
   });
 
   // Cálculo da Ofensiva (Streak)
@@ -191,13 +216,38 @@ function getStudentStats(cpf, ss, sheet) {
     checkDate.setDate(checkDate.getDate() - 1);
   }
 
+  // Recorde Histórico de Streak
+  const sortedDates = Object.keys(trainedDatesWithTypes).sort();
+  let bestStreak = 0;
+  let currentStreakCount = 0;
+  let lastDate = null;
+
+  sortedDates.forEach(dateStr => {
+    // Adicionamos T00:00:00 para evitar problemas de fuso horário local na conversão
+    const d = new Date(dateStr + "T00:00:00");
+    if (lastDate) {
+      const diff = Math.round((d.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+      if (diff === 1) {
+        currentStreakCount++;
+      } else if (diff > 1) {
+        currentStreakCount = 1;
+      }
+    } else {
+      currentStreakCount = 1;
+    }
+    lastDate = d;
+    if (currentStreakCount > bestStreak) bestStreak = currentStreakCount;
+  });
+
   return {
     streak,
+    bestStreak,
     monthlyTotal,
     weeklyTotal,
     weeklyGoal,
     monthName: getMonthName(currentMonth),
-    calendarData
+    calendarData,
+    monthlyEvolution
   };
 }
 

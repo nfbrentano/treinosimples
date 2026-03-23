@@ -16,6 +16,7 @@
         }
     </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <link
@@ -143,6 +144,19 @@
                     </div>
                 </section>
 
+                <!-- Monthly Evolution Chart -->
+                <section class="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-black tracking-tight uppercase italic underline decoration-primary decoration-4 underline-offset-8">
+                            Evolução Mensal</h2>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-primary/60 bg-primary/5 px-4 py-1 rounded-full border border-primary/10">Últimos 12 Meses</span>
+                    </div>
+                    <div class="bg-primary/5 dark:bg-primary/10 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden shadow-2xl h-[300px]">
+                        <div class="bg-primary-glow absolute inset-0 pointer-events-none"></div>
+                        <canvas id="evolution-chart" class="relative z-10"></canvas>
+                    </div>
+                </section>
+
                 <!-- Motivational Banner (On Web it sits below the calendar) -->
                 <section class="hidden lg:block">
                     <div
@@ -178,6 +192,9 @@
                             Ofensiva Atual</p>
                         <p id="stat-streak" class="text-4xl font-black tracking-tighter text-black dark:text-white"><span
                                 class="animate-pulse">--</span> Dias</p>
+                        <p id="stat-best-streak" class="text-[10px] font-bold text-primary opacity-80 mt-1 uppercase tracking-wider">
+                            Recorde: -- dias
+                        </p>
                     </div>
                 </div>
 
@@ -301,6 +318,15 @@
                 currentStats = data;
                 allTrainedDays = data.calendarData || [];
                 updateUI(data);
+
+                // Additional fetch for monthly history as requested
+                try {
+                    const histResponse = await fetch(`${API_URL}?cpf=${userCpf}&action=getMonthlyHistory`);
+                    const histData = await histResponse.json();
+                    renderEvolutionChart(histData.monthlyEvolution || []);
+                } catch (e) {
+                    console.error("History fetch failed", e);
+                }
             } catch (error) {
                 console.error('Erro ao buscar estatísticas:', error);
             } finally {
@@ -310,6 +336,7 @@
 
         function updateUI(data) {
             document.getElementById('stat-streak').innerText = `${data.streak} Dias`;
+            document.getElementById('stat-best-streak').innerText = `Recorde: ${data.bestStreak || 0} dias`;
             document.getElementById('stat-weekly').innerText = `${data.weeklyTotal} de ${data.weeklyGoal}`;
             document.getElementById('stat-monthly').innerText = data.monthlyTotal;
             document.getElementById('label-month').innerText = `${data.monthName} ${new Date().getFullYear()}`;
@@ -338,6 +365,70 @@
         function changeMonth(delta) {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
             renderCalendar(allTrainedDays);
+        }
+
+        let evolutionChart = null;
+
+        function renderEvolutionChart(monthlyData) {
+            const ctx = document.getElementById('evolution-chart').getContext('2d');
+            
+            if (evolutionChart) {
+                evolutionChart.destroy();
+            }
+
+            const labels = monthlyData.map(m => m.label);
+            const values = monthlyData.map(m => m.value);
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+
+            evolutionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Treinos',
+                        data: values,
+                        backgroundColor: '#0BDA87',
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        hoverBackgroundColor: '#ec5b13',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: '#1a1a1a',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 16, weight: 'bold' },
+                            displayColors: false,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: isDark ? '#fff' : '#000',
+                                font: { weight: 'bold', size: 11 }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' },
+                            ticks: {
+                                color: isDark ? '#fff' : '#000',
+                                font: { weight: 'bold', size: 11 },
+                                stepSize: 5
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function renderCalendar(trainedDays) {

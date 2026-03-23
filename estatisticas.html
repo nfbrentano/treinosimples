@@ -554,26 +554,33 @@
             });
 
             for (let i = 0; i < firstDay; i++) {
-                grid.appendChild(createDot(null, false));
+                grid.appendChild(createDot(null, false, ""));
             }
 
             const today = new Date();
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${String(day).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}/${year}`;
+                const shortDate = `${String(day).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}`;
                 const workoutType = trainedMap[dateStr];
                 const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-                grid.appendChild(createDot(workoutType, isToday));
+                grid.appendChild(createDot(workoutType, isToday, shortDate));
             }
         }
 
-        function createDot(workoutType, isToday) {
+        function createDot(workoutType, isToday, dateLabel) {
             const dot = document.createElement('div');
             const hasTrained = !!workoutType;
-            dot.className = `aspect-square rounded-md transition-all duration-700 flex items-center justify-center text-[10px] font-black ${hasTrained
+            dot.className = `aspect-square rounded-md transition-all duration-700 flex items-center justify-center text-[10px] font-black hover:scale-110 active:scale-95 cursor-default ${hasTrained
                     ? 'bg-accent shadow-[0_0_12px_rgba(11,218,135,0.4)] border border-accent/20 text-white'
                     : 'bg-slate-200 dark:bg-slate-800 border border-white/5 text-transparent'
                 }`;
             dot.innerText = workoutType || '';
+            
+            // Tooltip nativo
+            if (dateLabel) {
+                dot.title = hasTrained ? `${dateLabel} - Treino ${workoutType}` : dateLabel;
+            }
+
             if (isToday) {
                 dot.classList.add('ring-2', 'ring-primary', 'ring-offset-4', 'ring-offset-background-dark', 'scale-110');
             }

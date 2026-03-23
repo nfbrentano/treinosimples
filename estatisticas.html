@@ -157,6 +157,21 @@
                     </div>
                 </section>
 
+                <!-- Workout Type Distribution Chart -->
+                <section class="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-black tracking-tight uppercase italic underline decoration-primary decoration-4 underline-offset-8">
+                            Distribuição por Tipo</h2>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-primary/60 bg-primary/5 px-4 py-1 rounded-full border border-primary/10">Este Mês</span>
+                    </div>
+                    <div class="bg-primary/5 dark:bg-primary/10 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden shadow-2xl h-[300px] flex items-center justify-center">
+                        <div class="bg-primary-glow absolute inset-0 pointer-events-none"></div>
+                        <div class="relative z-10 w-full h-full max-w-[250px]">
+                            <canvas id="type-chart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Motivational Banner (On Web it sits below the calendar) -->
                 <section class="hidden lg:block">
                     <div
@@ -357,6 +372,17 @@
                 document.getElementById('banner-title-mobile').innerText = title;
             }
 
+            if (data.typeDistribution && data.typeDistribution.length > 0) {
+                renderTypeChart(data.typeDistribution);
+            } else {
+                // Mock data para visualização inicial
+                renderTypeChart([
+                    {label: 'A', value: 4},
+                    {label: 'B', value: 3},
+                    {label: 'C', value: 2}
+                ]);
+            }
+
             if (data.calendarData) {
                 renderCalendar(allTrainedDays);
             }
@@ -368,6 +394,7 @@
         }
 
         let evolutionChart = null;
+        let typeChart = null;
 
         function renderEvolutionChart(monthlyData) {
             const ctx = document.getElementById('evolution-chart').getContext('2d');
@@ -424,6 +451,73 @@
                                 color: isDark ? '#fff' : '#000',
                                 font: { weight: 'bold', size: 11 },
                                 stepSize: 5
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTypeChart(typeDistribution) {
+            const canvas = document.getElementById('type-chart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            if (typeChart) {
+                typeChart.destroy();
+            }
+
+            const labels = typeDistribution.map(d => `Treino ${d.label}`);
+            const values = typeDistribution.map(d => d.value);
+            const isDark = document.documentElement.classList.contains('dark');
+
+            const colors = [
+                '#0BDA87', // Verde Principal
+                '#ec5b13', // Laranja Sotaque
+                '#3b82f6', // Azul
+                '#8b5cf6', // Violeta
+                '#f59e0b', // Amarelo/Âmbar
+            ];
+
+            typeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors,
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: isDark ? '#fff' : '#000',
+                                font: { weight: 'bold', size: 10 },
+                                padding: 20,
+                                usePointStyle: true,
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 16, weight: 'bold' },
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
                             }
                         }
                     }

@@ -223,7 +223,6 @@ function getStudentStats(cpf, ss, sheet) {
   let lastDate = null;
 
   sortedDates.forEach(dateStr => {
-    // Adicionamos T00:00:00 para evitar problemas de fuso horário local na conversão
     const d = new Date(dateStr + "T00:00:00");
     if (lastDate) {
       const diff = Math.round((d.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
@@ -239,9 +238,27 @@ function getStudentStats(cpf, ss, sheet) {
     if (currentStreakCount > bestStreak) bestStreak = currentStreakCount;
   });
 
+  // Distribuição por Tipo (Deste Mês)
+  const typeCount = {};
+  Object.keys(trainedDatesWithTypes).forEach(dateKey => {
+    const parts = dateKey.split('-');
+    const year = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1; // Mês 0-indexed no JS
+    if (month === currentMonth && year === currentYear) {
+      const type = trainedDatesWithTypes[dateKey];
+      typeCount[type] = (typeCount[type] || 0) + 1;
+    }
+  });
+
+  const typeDistribution = Object.keys(typeCount).map(type => ({
+    label: type,
+    value: typeCount[type]
+  }));
+
   return {
     streak,
     bestStreak,
+    typeDistribution,
     monthlyTotal,
     weeklyTotal,
     weeklyGoal,

@@ -268,6 +268,9 @@
                             Treinos no Mês</p>
                         <p id="stat-monthly" class="text-4xl font-black tracking-tighter text-black dark:text-white"><span
                                 class="animate-pulse">--</span> Sessões</p>
+                        <p id="stat-monthly-trend" class="text-[10px] font-bold mt-1 uppercase tracking-wider hidden">
+                            -- vs meta
+                        </p>
                     </div>
                 </div>
 
@@ -358,8 +361,20 @@
         function updateUI(data) {
             document.getElementById('stat-streak').innerText = `${data.streak} Dias`;
             document.getElementById('stat-best-streak').innerText = `Recorde: ${data.bestStreak || 0} dias`;
-            document.getElementById('stat-weekly').innerText = `${data.weeklyTotal} de ${data.weeklyGoal}`;
-            document.getElementById('stat-monthly').innerText = data.monthlyTotal;
+            document.getElementById('stat-weekly').innerHTML = `${data.weeklyTotal} <span class="text-2xl opacity-60 text-slate-400">de ${data.weeklyGoal}</span>`;
+            document.getElementById('stat-monthly').innerHTML = `${data.monthlyTotal} <span class="text-2xl opacity-60">Sessões</span>`;
+            
+            // Contexto Mensal (Comparativo com Meta)
+            const monthlyTarget = (data.weeklyGoal || 0) * 4;
+            const trendEl = document.getElementById('stat-monthly-trend');
+            if (trendEl && data.monthlyTotal !== undefined) {
+                const diff = data.monthlyTotal - monthlyTarget;
+                const sign = diff >= 0 ? '↑' : '↓';
+                const statusColor = diff >= 0 ? 'text-primary' : 'text-orange-500';
+                trendEl.innerText = `${sign} ${Math.abs(diff)} vs meta agregada para o mês`;
+                trendEl.className = `text-[10px] font-bold mt-1 uppercase tracking-wider ${statusColor}`;
+                trendEl.classList.remove('hidden');
+            }
             document.getElementById('label-month').innerText = `${data.monthName} ${new Date().getFullYear()}`;
 
             const isWeeklyGoalMet = data.weeklyTotal >= data.weeklyGoal;

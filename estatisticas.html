@@ -92,7 +92,57 @@
         </div>
     </header>
 
-    <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-8 pb-32">
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl pb-32">
+        <!-- Top Stats (Prioritized) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mt-2">
+            <!-- Streak Card (Moved to top) -->
+            <div
+                class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
+                <div class="flex items-center justify-between">
+                    <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
+                        <span
+                            class="material-symbols-outlined text-primary text-4xl fill-[1]">local_fire_department</span>
+                    </div>
+                    <button onclick="shareStreak()"
+                        class="p-4 bg-white/10 hover:bg-white/20 dark:bg-black/20 dark:hover:bg-black/40 rounded-2xl transition-all duration-300 flex items-center gap-2 group/btn border border-white/10">
+                        <span
+                            class="material-symbols-outlined text-primary text-2xl group-hover/btn:scale-110 transition-transform">share</span>
+                        <span class="text-xs font-black uppercase tracking-widest text-primary hidden sm:block">Compartilhar</span>
+                    </button>
+                </div>
+                <div>
+                    <p
+                        class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">
+                        Ofensiva Atual</p>
+                    <p id="stat-streak" class="text-4xl font-black tracking-tighter text-black dark:text-white"><span
+                            class="animate-pulse">--</span> Dias</p>
+                    <p id="stat-best-streak" class="text-[10px] font-bold text-primary opacity-80 mt-1 uppercase tracking-wider">
+                        Recorde: -- dias
+                    </p>
+                </div>
+            </div>
+
+            <!-- Monthly Total Card (Moved to top) -->
+            <div
+                class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
+                <div class="flex items-center justify-between">
+                    <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-primary text-4xl">fitness_center</span>
+                    </div>
+                </div>
+                <div>
+                    <p
+                        class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">
+                        Treinos no Mês</p>
+                    <p id="stat-monthly" class="text-4xl font-black tracking-tighter text-black dark:text-white"><span
+                            class="animate-pulse">--</span> Sessões</p>
+                    <p id="stat-monthly-trend" class="text-[10px] font-bold mt-1 uppercase tracking-wider hidden">
+                        -- vs meta
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             <!-- Left Column: Calendar & Motivation (Spans 2 on LG) -->
@@ -192,32 +242,6 @@
             <div class="space-y-6">
                 <h2 class="text-2xl font-black tracking-tight uppercase italic lg:hidden">Resumo e Meta</h2>
 
-                <!-- Streak Card -->
-                <div
-                    class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
-                    <div class="flex items-center justify-between">
-                        <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
-                            <span
-                                class="material-symbols-outlined text-primary text-4xl fill-[1]">local_fire_department</span>
-                        </div>
-                        <button onclick="shareStreak()"
-                            class="p-4 bg-white/10 hover:bg-white/20 dark:bg-black/20 dark:hover:bg-black/40 rounded-2xl transition-all duration-300 flex items-center gap-2 group/btn border border-white/10">
-                            <span
-                                class="material-symbols-outlined text-primary text-2xl group-hover/btn:scale-110 transition-transform">share</span>
-                            <span class="text-xs font-black uppercase tracking-widest text-primary hidden sm:block">Compartilhar</span>
-                        </button>
-                    </div>
-                    <div>
-                        <p
-                            class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">
-                            Ofensiva Atual</p>
-                        <p id="stat-streak" class="text-4xl font-black tracking-tighter text-black dark:text-white"><span
-                                class="animate-pulse">--</span> Dias</p>
-                        <p id="stat-best-streak" class="text-[10px] font-bold text-primary opacity-80 mt-1 uppercase tracking-wider">
-                            Recorde: -- dias
-                        </p>
-                    </div>
-                </div>
 
                 <!-- Weekly Progress Card -->
                 <div
@@ -254,25 +278,6 @@
                     </div>
                 </div>
 
-                <!-- Monthly Total Card -->
-                <div
-                    class="group flex flex-col gap-4 rounded-[2rem] p-8 bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-xl">
-                    <div class="flex items-center justify-between">
-                        <div class="p-3 bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-primary text-4xl">fitness_center</span>
-                        </div>
-                    </div>
-                    <div>
-                        <p
-                            class="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-1">
-                            Treinos no Mês</p>
-                        <p id="stat-monthly" class="text-4xl font-black tracking-tighter text-black dark:text-white"><span
-                                class="animate-pulse">--</span> Sessões</p>
-                        <p id="stat-monthly-trend" class="text-[10px] font-bold mt-1 uppercase tracking-wider hidden">
-                            -- vs meta
-                        </p>
-                    </div>
-                </div>
 
                 <!-- Motivational Banner (Mobile Only) -->
                 <div

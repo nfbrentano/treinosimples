@@ -368,10 +368,8 @@
             const monthlyTarget = (data.weeklyGoal || 0) * 4;
             const trendEl = document.getElementById('stat-monthly-trend');
             if (trendEl && data.monthlyTotal !== undefined) {
-                const diff = data.monthlyTotal - monthlyTarget;
-                const sign = diff >= 0 ? '↑' : '↓';
-                const statusColor = diff >= 0 ? 'text-primary' : 'text-orange-500';
-                trendEl.innerText = `${sign} ${Math.abs(diff)} vs meta agregada para o mês`;
+                const statusColor = data.monthlyTotal >= monthlyTarget ? 'text-primary' : 'text-orange-500';
+                trendEl.innerText = `${data.monthlyTotal} / ${monthlyTarget} Sessões (Meta Mensal)`;
                 trendEl.className = `text-[10px] font-bold mt-1 uppercase tracking-wider ${statusColor}`;
                 trendEl.classList.remove('hidden');
             }
